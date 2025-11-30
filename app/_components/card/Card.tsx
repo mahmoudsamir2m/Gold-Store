@@ -3,8 +3,10 @@
 import Image from "next/image";
 import { ProductCardProps } from "./types/ProductCardProps";
 import { FaShoppingCart } from "react-icons/fa";
+import Link from "next/link";
 
 export default function ProductCard({
+  id,
   image,
   title,
   rating,
@@ -15,9 +17,6 @@ export default function ProductCard({
     alert("تم إضافة المنتج للسلة!");
   };
 
-  const handleViewDetails = () => {
-    console.log("عرض تفاصيل المنتج...");
-  };
   return (
     <div
       className="bg-white rounded-xl shadow-md overflow-hidden w-80 mx-auto dir-rtl"
@@ -68,14 +67,13 @@ export default function ProductCard({
             </button>
           }
         </div>
-
         {/* View Details Button */}
-        <button
-          onClick={handleViewDetails}
+        <Link
+          href={`/productDetails/${id}`}
           className="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-sm"
         >
           عرض التفاصيل
-        </button>
+        </Link>
       </div>
     </div>
   );

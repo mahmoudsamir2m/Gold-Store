@@ -1,5 +1,6 @@
 export const products = [
   {
+    id: 1,
     image: "/gold-jewelry-circle.png",
     title: "خاتم دهب",
     rating: 4.5,
@@ -7,6 +8,7 @@ export const products = [
     originalPrice: 129.99,
   },
   {
+    id: 2,
     image: "/gold-jewelry-circle.png",
     title: "سلسلة ذهب",
     rating: 4.8,
@@ -14,6 +16,7 @@ export const products = [
     originalPrice: 250.0,
   },
   {
+    id: 3,
     image: "/gold-jewelry-circle.png",
     title: "أسواره دهب",
     rating: 4.2,
@@ -21,6 +24,7 @@ export const products = [
     originalPrice: 179.99,
   },
   {
+    id: 4,
     image: "/gold-jewelry-circle.png",
     title: "حلق دهب",
     rating: 4.7,
@@ -28,6 +32,7 @@ export const products = [
     originalPrice: 110.0,
   },
   {
+    id: 5,
     image: "/gold-jewelry-circle.png",
     title: "خاتم دهب",
     rating: 4.5,
@@ -35,6 +40,7 @@ export const products = [
     originalPrice: 129.99,
   },
   {
+    id: 6,
     image: "/gold-jewelry-circle.png",
     title: "سلسلة ذهب",
     rating: 4.8,
@@ -42,6 +48,7 @@ export const products = [
     originalPrice: 250.0,
   },
   {
+    id: 7,
     image: "/gold-jewelry-circle.png",
     title: "أسواره دهب",
     rating: 4.2,
@@ -49,6 +56,7 @@ export const products = [
     originalPrice: 179.99,
   },
   {
+    id: 8,
     image: "/gold-jewelry-circle.png",
     title: "حلق دهب",
     rating: 4.7,
@@ -56,6 +64,7 @@ export const products = [
     originalPrice: 110.0,
   },
   {
+    id: 9,
     image: "/gold-jewelry-circle.png",
     title: "خاتم دهب",
     rating: 4.5,
@@ -63,6 +72,7 @@ export const products = [
     originalPrice: 129.99,
   },
   {
+    id: 10,
     image: "/gold-jewelry-circle.png",
     title: "سلسلة ذهب",
     rating: 4.8,
@@ -70,6 +80,7 @@ export const products = [
     originalPrice: 250.0,
   },
   {
+    id: 11,
     image: "/gold-jewelry-circle.png",
     title: "أسواره دهب",
     rating: 4.2,
@@ -77,6 +88,7 @@ export const products = [
     originalPrice: 179.99,
   },
   {
+    id: 12,
     image: "/gold-jewelry-circle.png",
     title: "حلق دهب",
     rating: 4.7,
@@ -84,6 +96,7 @@ export const products = [
     originalPrice: 110.0,
   },
   {
+    id: 13,
     image: "/gold-jewelry-circle.png",
     title: "خاتم دهب",
     rating: 4.5,
@@ -91,6 +104,7 @@ export const products = [
     originalPrice: 129.99,
   },
   {
+    id: 14,
     image: "/gold-jewelry-circle.png",
     title: "سلسلة ذهب",
     rating: 4.8,
@@ -98,6 +112,7 @@ export const products = [
     originalPrice: 250.0,
   },
   {
+    id: 15,
     image: "/gold-jewelry-circle.png",
     title: "أسواره دهب",
     rating: 4.2,
@@ -105,6 +120,7 @@ export const products = [
     originalPrice: 179.99,
   },
   {
+    id: 16,
     image: "/gold-jewelry-circle.png",
     title: "حلق دهب",
     rating: 4.7,
@@ -112,6 +128,7 @@ export const products = [
     originalPrice: 110.0,
   },
   {
+    id: 17,
     image: "/gold-jewelry-circle.png",
     title: "خاتم دهب",
     rating: 4.5,
@@ -119,6 +136,7 @@ export const products = [
     originalPrice: 129.99,
   },
   {
+    id: 18,
     image: "/gold-jewelry-circle.png",
     title: "سلسلة ذهب",
     rating: 4.8,
@@ -126,6 +144,7 @@ export const products = [
     originalPrice: 250.0,
   },
   {
+    id: 19,
     image: "/gold-jewelry-circle.png",
     title: "أسواره دهب",
     rating: 4.2,
@@ -133,6 +152,7 @@ export const products = [
     originalPrice: 179.99,
   },
   {
+    id: 20,
     image: "/gold-jewelry-circle.png",
     title: "حلق دهب",
     rating: 4.7,
@@ -140,6 +160,7 @@ export const products = [
     originalPrice: 110.0,
   },
   {
+    id: 21,
     image: "/gold-jewelry-circle.png",
     title: "خاتم دهب",
     rating: 4.5,
@@ -147,6 +168,7 @@ export const products = [
     originalPrice: 129.99,
   },
   {
+    id: 22,
     image: "/gold-jewelry-circle.png",
     title: "سلسلة ذهب",
     rating: 4.8,
@@ -154,6 +176,7 @@ export const products = [
     originalPrice: 250.0,
   },
   {
+    id: 23,
     image: "/gold-jewelry-circle.png",
     title: "أسواره دهب",
     rating: 4.2,
@@ -161,6 +184,7 @@ export const products = [
     originalPrice: 179.99,
   },
   {
+    id: 24,
     image: "/gold-jewelry-circle.png",
     title: "حلق دهب",
     rating: 4.7,

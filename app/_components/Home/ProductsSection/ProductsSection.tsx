@@ -7,9 +7,10 @@ import { products } from "./data";
 export default function ProductsSection() {
   return (
     <ReusableSliderSection title="منتجات مختارة" link="/all-products">
-      {products.map((product, i) => (
-        <SwiperSlide key={i}>
+      {products.map((product) => (
+        <SwiperSlide key={product.id}>
           <Card
+            id={product.id}
             image={product.image}
             title={product.title}
             rating={product.rating}
