@@ -11,11 +11,12 @@ export default function ProductsSection() {
         <SwiperSlide key={product.id}>
           <Card
             id={product.id}
-            image={product.image}
+            images={product.images}
             title={product.title}
             rating={product.rating}
             price={product.price}
             originalPrice={product.originalPrice}
+            width="w-80"
           />
         </SwiperSlide>
       ))}

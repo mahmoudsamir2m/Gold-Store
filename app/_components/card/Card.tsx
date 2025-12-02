@@ -5,13 +5,14 @@ import { ProductCardProps } from "./types/ProductCardProps";
 import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
 
-export default function ProductCard({
+export default function Card({
   id,
-  image,
+  images,
   title,
   rating,
   price,
   originalPrice,
+  width,
 }: ProductCardProps) {
   const handleAddToCart = () => {
     alert("تم إضافة المنتج للسلة!");
@@ -19,13 +20,13 @@ export default function ProductCard({
 
   return (
     <div
-      className="bg-white rounded-xl shadow-md overflow-hidden w-80 mx-auto dir-rtl"
+      className={`bg-white rounded-xl shadow-md overflow-hidden ${width} mx-auto dir-rtl`}
       dir="rtl"
     >
       {/* Product image */}
       <div className="relative w-full h-48 bg-gray-100">
         <Image
-          src={image}
+          src={images[0]}
           alt={title}
           fill
           className="object-cover"
