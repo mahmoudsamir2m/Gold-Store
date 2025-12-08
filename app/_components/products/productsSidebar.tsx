@@ -1,14 +1,17 @@
+// app/_components/products/productsSidebar.tsx
+
 "use client";
 
 import { useState } from "react";
 
+// تعريف Props بشكل صحيح - maxPrice من نوع number وليس literal
 interface Props {
   filters: {
     metal: "gold" | "silver" | "";
     karat: string;
     type: string;
     minPrice: number;
-    maxPrice: 5000;
+    maxPrice: number; // ✅ تم التصحيح: كان 5000 ❌
     rating: number;
   };
   onFilterChange: React.Dispatch<
@@ -32,7 +35,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
     rating: false,
   });
 
-  // ✅ تعريف النوع الآمن
+  // تحديد النوع الآمن لـ section
   type SectionKey = keyof typeof openSections;
 
   const toggleSection = (section: SectionKey) => {
@@ -42,7 +45,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
     }));
   };
 
-  // Karat Options based on selected metal
+  // خيارات العيار حسب المعدن
   const karatOptions =
     filters.metal === "silver"
       ? [
@@ -57,7 +60,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
 
   return (
     <div className="w-full bg-white rounded-lg p-4 text-sm space-y-4 rtl border max-h-screen overflow-y-auto">
-      {/* Metal Section - Tabs */}
+      {/* قسم المعادن */}
       <div>
         <h3 className="font-semibold text-gray-800 mb-2">المعادن</h3>
         <div className="flex gap-2 mb-4">
@@ -67,7 +70,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
             }
             className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
               filters.metal === "gold"
-                ? "bg-primary-500 text-white"
+                ? "bg-yellow-500 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -79,7 +82,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
             }
             className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
               filters.metal === "silver"
-                ? "bg-primary-500 text-white"
+                ? "bg-yellow-500 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
@@ -88,7 +91,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
         </div>
       </div>
 
-      {/* Karat Section */}
+      {/* قسم العيار */}
       <div>
         <button
           onClick={() => toggleSection("karat")}
@@ -118,7 +121,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
         )}
       </div>
 
-      {/* Type Section */}
+      {/* قسم النوع */}
       <div>
         <button
           onClick={() => toggleSection("type")}
@@ -179,7 +182,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
         )}
       </div>
 
-      {/* Price Section */}
+      {/* قسم السعر */}
       <div>
         <button
           onClick={() => toggleSection("price")}
@@ -220,7 +223,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
         )}
       </div>
 
-      {/* Rating Section */}
+      {/* قسم التقييم */}
       <div>
         <button
           onClick={() => toggleSection("rating")}
@@ -243,7 +246,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
                   rating: parseFloat(e.target.value),
                 })
               }
-              className="w-full accent-primary-500"
+              className="w-full accent-yellow-500"
             />
             <p className="text-xs text-gray-600 mt-1">
               من ⭐️{" "}

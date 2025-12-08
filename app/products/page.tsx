@@ -6,14 +6,24 @@ import { products as data } from "../_components/Home/ProductsSection/data";
 import ProductsSidebar from "../_components/products/productsSidebar";
 import { FaFilter } from "react-icons/fa";
 
+// تعريف نوع الفلاتر
+interface FilterState {
+  metal: "gold" | "silver" | "";
+  karat: string;
+  type: string;
+  minPrice: number;
+  maxPrice: number;
+  rating: number;
+}
+
 export default function ProductsPage() {
   const [filtered, setFiltered] = useState(data);
-  const [filters, setFilters] = useState({
-    metal: "" as "gold" | "silver" | "",
+  const [filters, setFilters] = useState<FilterState>({
+    metal: "",
     karat: "",
     type: "",
     minPrice: 0,
-    maxPrice: 5000 as number,
+    maxPrice: 5000, // ✅ الرقم 5000 مقبول لأنه من نوع number
     rating: 0,
   });
 
@@ -37,7 +47,7 @@ export default function ProductsPage() {
     };
   }, []);
 
-  // إغلاق عند التمرير (scroll)
+  // إغلاق عند التمرير
   useEffect(() => {
     const handleScroll = () => {
       if (isSidebarOpen) {
@@ -92,7 +102,7 @@ export default function ProductsPage() {
       <div className="flex lg:hidden mb-6">
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-lg shadow text-sm font-medium hover:bg-primary-600 transition"
+          className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg shadow text-sm font-medium hover:bg-yellow-600 transition"
         >
           <FaFilter /> تصفية المنتجات
         </button>
@@ -105,36 +115,34 @@ export default function ProductsPage() {
             isSidebarOpen ? "block" : "hidden"
           } fixed inset-0 z-50 lg:hidden`}
         >
+          {/* الخلفية الشفافة */}
           <div
-            className="absolute inset-0 bg-transparent bg-opacity-50 transition-opacity duration-300"
+            className="absolute inset-0 bg-black bg-opacity-50"
             onClick={() => setIsSidebarOpen(false)}
           ></div>
 
           {/* لوحة الفلاتر - تنزلق من اليمين */}
           <div
             ref={sidebarRef}
-            className="absolute right-0 top-0 bottom-0 w-72 bg-white p-4 rtl"
+            className="absolute right-0 top-0 bottom-0 w-72 bg-white p-4 rtl border-l-4 border-yellow-500"
             style={{
               transform: isSidebarOpen ? "translateX(0)" : "translateX(100%)",
               transition: "transform 0.3s ease-in-out",
               boxShadow: "0 20px 40px rgba(234, 179, 8, 0.15)",
             }}
           >
-            {/* رأس الفلتر */}
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-gray-800">الفلاتر</h3>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="text-gray-500 hover:text-gray-700 text-xl transition duration-150"
+                className="text-gray-500 hover:text-gray-700 text-xl transition"
               >
                 &times;
               </button>
             </div>
 
-            {/* محتوى الفلاتر */}
             <ProductsSidebar filters={filters} onFilterChange={setFilters} />
 
-            {/* زر إعادة تعيين */}
             <button
               onClick={() =>
                 setFilters({
@@ -146,7 +154,7 @@ export default function ProductsPage() {
                   rating: 0,
                 })
               }
-              className="w-full mt-6 text-xs text-primary-500 underline font-medium hover:text-primary-600 transition duration-150"
+              className="w-full mt-6 text-xs text-yellow-600 underline font-medium hover:text-yellow-800 transition"
             >
               إعادة تعيين الفلاتر
             </button>
@@ -154,7 +162,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Sidebar كبير - للشاشات الكبيرة فقط */}
-        <div className="hidden lg:block flex-shrink-0 w-72">
+        <div className="hidden lg:block shrink-0 w-72">
           <ProductsSidebar filters={filters} onFilterChange={setFilters} />
         </div>
 
@@ -184,7 +192,7 @@ export default function ProductsPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10 sm:gap-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filtered.map((product) => (
                 <Card
                   key={product.id}
