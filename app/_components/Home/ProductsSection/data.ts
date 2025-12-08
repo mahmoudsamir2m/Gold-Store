@@ -1,8 +1,11 @@
 export const products = [
   {
     id: 1,
-    title: "خاتم دهب",
+    title: "خاتم دهب عيار 21",
     category: "خاتم",
+    type: "Rings",
+    metal: "gold",
+    karat: "عيار 21",
     rating: 4.5,
     price: 99.99,
     originalPrice: 129.99,
@@ -33,8 +36,11 @@ export const products = [
   },
   {
     id: 2,
-    title: "سلسلة ذهب",
+    title: "سلسلة ذهب عيار 21",
     category: "سلسلة",
+    type: "Necklaces",
+    metal: "gold",
+    karat: "عيار 21",
     rating: 4.8,
     price: 199.99,
     originalPrice: 250.0,
@@ -64,8 +70,11 @@ export const products = [
   },
   {
     id: 3,
-    title: "أسواره دهب",
+    title: "أسواره دهب عيار 21",
     category: "أسورة",
+    type: "Bracelets",
+    metal: "gold",
+    karat: "عيار 21",
     rating: 4.2,
     price: 149.99,
     originalPrice: 179.99,
@@ -95,8 +104,11 @@ export const products = [
   },
   {
     id: 4,
-    title: "حلق دهب",
+    title: "حلق دهب عيار 21",
     category: "حلق",
+    type: "Earrings",
+    metal: "gold",
+    karat: "عيار 21",
     rating: 4.7,
     price: 89.99,
     originalPrice: 110.0,
@@ -124,644 +136,51 @@ export const products = [
       },
     ],
   },
-  {
-    id: 5,
-    title: "خاتم دهب",
-    category: "خاتم",
-    rating: 4.5,
-    price: 99.99,
-    originalPrice: 129.99,
-    reviewsCount: 88,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "جمال لا يوصف",
-        comment: "الخاتم رائع ويعطي لمعة مميزة على اليد.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "مناسب للإهداء",
-        comment: "هدية رائعة لأحبائي، الجودة ممتازة.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 6,
-    title: "سلسلة ذهب",
-    category: "سلسلة",
-    rating: 4.8,
-    price: 199.99,
-    originalPrice: 250.0,
-    reviewsCount: 137,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "فخامة وأناقة",
-        comment: "السلسلة مذهلة وتناسب جميع الإطلالات.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "تسليم سريع",
-        comment: "وصل المنتج بسرعة والتغليف ممتاز.",
-        author: "عميل",
-        date: "منذ يومين",
-      },
-    ],
-  },
-  {
-    id: 7,
-    title: "أسوره دهب",
-    category: "أسورة",
-    rating: 4.2,
-    price: 149.99,
-    originalPrice: 179.99,
-    reviewsCount: 34,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 4,
-        title: "تصميم مميز",
-        comment: "الأسورة جميلة لكن تحتاج تعديل على الحجم.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 5,
-        title: "جودة ممتازة",
-        comment: "ممتازة من حيث الخامة والتصميم.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 8,
-    title: "حلق دهب",
-    category: "حلق",
-    rating: 4.7,
-    price: 89.99,
-    originalPrice: 110.0,
-    reviewsCount: 152,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "خفة وأناقة",
-        comment: "الحلق خفيف جدًا ومريح للارتداء اليومي.",
-        author: "عميل",
-        date: "منذ 3 أيام",
-      },
-      {
-        rating: 4,
-        title: "رائع",
-        comment: "التصميم ممتاز لكن اللون أغمق من المتوقع.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-    ],
-  },
-  {
-    id: 9,
-    title: "خاتم دهب",
-    category: "خاتم",
-    rating: 4.5,
-    price: 99.99,
-    originalPrice: 129.99,
-    reviewsCount: 41,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "جمال لا يوصف",
-        comment: "الخاتم رائع ويعطي لمعة مميزة على اليد.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "مناسب للإهداء",
-        comment: "هدية رائعة لأحبائي، الجودة ممتازة.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 10,
-    title: "سلسلة ذهب",
-    category: "سلسلة",
-    rating: 4.8,
-    price: 199.99,
-    originalPrice: 250.0,
-    reviewsCount: 159,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "فخامة وأناقة",
-        comment: "السلسلة مذهلة وتناسب جميع الإطلالات.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "تسليم سريع",
-        comment: "وصل المنتج بسرعة والتغليف ممتاز.",
-        author: "عميل",
-        date: "منذ يومين",
-      },
-    ],
-  },
-  {
-    id: 11,
-    title: "أسوره دهب",
-    category: "أسورة",
-    rating: 4.2,
-    price: 149.99,
-    originalPrice: 179.99,
-    reviewsCount: 77,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 4,
-        title: "تصميم مميز",
-        comment: "الأسورة جميلة لكن تحتاج تعديل على الحجم.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 5,
-        title: "جودة ممتازة",
-        comment: "ممتازة من حيث الخامة والتصميم.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 12,
-    title: "حلق دهب",
-    category: "حلق",
-    rating: 4.7,
-    price: 89.99,
-    originalPrice: 110.0,
-    reviewsCount: 121,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "خفة وأناقة",
-        comment: "الحلق خفيف جدًا ومريح للارتداء اليومي.",
-        author: "عميل",
-        date: "منذ 3 أيام",
-      },
-      {
-        rating: 4,
-        title: "رائع",
-        comment: "التصميم ممتاز لكن اللون أغمق من المتوقع.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-    ],
-  },
-  {
-    id: 13,
-    title: "خاتم دهب",
-    category: "خاتم",
-    rating: 4.5,
-    price: 99.99,
-    originalPrice: 129.99,
-    reviewsCount: 55,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "جمال لا يوصف",
-        comment: "الخاتم رائع ويعطي لمعة مميزة على اليد.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "مناسب للإهداء",
-        comment: "هدية رائعة لأحبائي، الجودة ممتازة.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 14,
-    title: "سلسلة ذهب",
-    category: "سلسلة",
-    rating: 4.8,
-    price: 199.99,
-    originalPrice: 250.0,
-    reviewsCount: 111,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "فخامة وأناقة",
-        comment: "السلسلة مذهلة وتناسب جميع الإطلالات.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "تسليم سريع",
-        comment: "وصل المنتج بسرعة والتغليف ممتاز.",
-        author: "عميل",
-        date: "منذ يومين",
-      },
-    ],
-  },
-  {
-    id: 15,
-    title: "أسوره دهب",
-    category: "أسورة",
-    rating: 4.2,
-    price: 149.99,
-    originalPrice: 179.99,
-    reviewsCount: 62,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 4,
-        title: "تصميم مميز",
-        comment: "الأسورة جميلة لكن تحتاج تعديل على الحجم.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 5,
-        title: "جودة ممتازة",
-        comment: "ممتازة من حيث الخامة والتصميم.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 16,
-    title: "حلق دهب",
-    category: "حلق",
-    rating: 4.7,
-    price: 89.99,
-    originalPrice: 110.0,
-    reviewsCount: 130,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "خفة وأناقة",
-        comment: "الحلق خفيف جدًا ومريح للارتداء اليومي.",
-        author: "عميل",
-        date: "منذ 3 أيام",
-      },
-      {
-        rating: 4,
-        title: "رائع",
-        comment: "التصميم ممتاز لكن اللون أغمق من المتوقع.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-    ],
-  },
-  {
-    id: 17,
-    title: "خاتم دهب",
-    category: "خاتم",
-    rating: 4.5,
-    price: 99.99,
-    originalPrice: 129.99,
-    reviewsCount: 42,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "جمال لا يوصف",
-        comment: "الخاتم رائع ويعطي لمعة مميزة على اليد.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "مناسب للإهداء",
-        comment: "هدية رائعة لأحبائي، الجودة ممتازة.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 18,
-    title: "سلسلة ذهب",
-    category: "سلسلة",
-    rating: 4.8,
-    price: 199.99,
-    originalPrice: 250.0,
-    reviewsCount: 91,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "فخامة وأناقة",
-        comment: "السلسلة مذهلة وتناسب جميع الإطلالات.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "تسليم سريع",
-        comment: "وصل المنتج بسرعة والتغليف ممتاز.",
-        author: "عميل",
-        date: "منذ يومين",
-      },
-    ],
-  },
-  {
-    id: 19,
-    title: "أسواره دهب",
-    category: "أسورة",
-    rating: 4.2,
-    price: 149.99,
-    originalPrice: 179.99,
-    reviewsCount: 80,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 4,
-        title: "تصميم مميز",
-        comment: "الأسورة جميلة لكن تحتاج تعديل على الحجم.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 5,
-        title: "جودة ممتازة",
-        comment: "ممتازة من حيث الخامة والتصميم.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 20,
-    title: "حلق دهب",
-    category: "حلق",
-    rating: 4.7,
-    price: 89.99,
-    originalPrice: 110.0,
-    reviewsCount: 147,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "خفة وأناقة",
-        comment: "الحلق خفيف جدًا ومريح للارتداء اليومي.",
-        author: "عميل",
-        date: "منذ 3 أيام",
-      },
-      {
-        rating: 4,
-        title: "رائع",
-        comment: "التصميم ممتاز لكن اللون أغمق من المتوقع.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-    ],
-  },
-  {
-    id: 21,
-    title: "خاتم دهب",
-    category: "خاتم",
-    rating: 4.5,
-    price: 99.99,
-    originalPrice: 129.99,
-    reviewsCount: 60,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "جمال لا يوصف",
-        comment: "الخاتم رائع ويعطي لمعة مميزة على اليد.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "مناسب للإهداء",
-        comment: "هدية رائعة لأحبائي، الجودة ممتازة.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 22,
-    title: "سلسلة ذهب",
-    category: "سلسلة",
-    rating: 4.8,
-    price: 199.99,
-    originalPrice: 250.0,
-    reviewsCount: 103,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "فخامة وأناقة",
-        comment: "السلسلة مذهلة وتناسب جميع الإطلالات.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 4,
-        title: "تسليم سريع",
-        comment: "وصل المنتج بسرعة والتغليف ممتاز.",
-        author: "عميل",
-        date: "منذ يومين",
-      },
-    ],
-  },
-  {
-    id: 23,
-    title: "أسوره دهب",
-    category: "أسورة",
-    rating: 4.2,
-    price: 149.99,
-    originalPrice: 179.99,
-    reviewsCount: 71,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 4,
-        title: "تصميم مميز",
-        comment: "الأسورة جميلة لكن تحتاج تعديل على الحجم.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-      {
-        rating: 5,
-        title: "جودة ممتازة",
-        comment: "ممتازة من حيث الخامة والتصميم.",
-        author: "عميل",
-        date: "منذ أسبوعين",
-      },
-    ],
-  },
-  {
-    id: 24,
-    title: "حلق دهب",
-    category: "حلق",
-    rating: 4.7,
-    price: 89.99,
-    originalPrice: 110.0,
-    reviewsCount: 139,
-    description:
-      "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
-    images: [
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-      "/gold-jewelry-circle.png",
-    ],
-    reviews: [
-      {
-        rating: 5,
-        title: "خفة وأناقة",
-        comment: "الحلق خفيف جدًا ومريح للارتداء اليومي.",
-        author: "عميل",
-        date: "منذ 3 أيام",
-      },
-      {
-        rating: 4,
-        title: "رائع",
-        comment: "التصميم ممتاز لكن اللون أغمق من المتوقع.",
-        author: "عميل",
-        date: "منذ أسبوع",
-      },
-    ],
-  },
+  ...Array.from({ length: 20 }, (_, i) => {
+    const baseId = 5 + i;
+    const titles = ["خاتم دهب", "سلسلة ذهب", "أسوره دهب", "حلق دهب"];
+    const categories = ["خاتم", "سلسلة", "أسورة", "حلق"];
+    const types = ["Rings", "Necklaces", "Bracelets", "Earrings"];
+
+    const index = i % 4;
+    const title = `${titles[index]} عيار 21`;
+    const category = categories[index];
+    const type = types[index];
+
+    return {
+      id: baseId,
+      title,
+      category,
+      type,
+      metal: "gold",
+      karat: "عيار 21",
+      rating: [4.5, 4.8, 4.2, 4.7][index],
+      price: [99.99, 199.99, 149.99, 89.99][index],
+      originalPrice: [129.99, 250.0, 179.99, 110.0][index],
+      reviewsCount: Math.floor(Math.random() * 100) + 50,
+      description:
+        "قطعة ذهبية فاخرة بتصميم مميز وخامة عالية الجودة تناسب جميع الإطلالات.",
+      images: [
+        "/gold-jewelry-circle.png",
+        "/gold-jewelry-circle.png",
+        "/gold-jewelry-circle.png",
+      ],
+      reviews: [
+        {
+          rating: 5,
+          title: "جمال لا يوصف",
+          comment: "المنتج رائع ويعطي لمعة مميزة.",
+          author: "عميل",
+          date: "منذ أسبوع",
+        },
+        {
+          rating: 4,
+          title: "جيد جدًا",
+          comment: "ممتاز من حيث الجودة والشكل.",
+          author: "عميل",
+          date: "منذ أسبوعين",
+        },
+      ],
+    };
+  }),
 ];
