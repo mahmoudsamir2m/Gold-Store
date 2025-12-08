@@ -16,7 +16,7 @@ export default function ProductsSection() {
             rating={product.rating}
             price={product.price}
             originalPrice={product.originalPrice}
-            width="w-80"
+            width="w-82"
           />
         </SwiperSlide>
       ))}
