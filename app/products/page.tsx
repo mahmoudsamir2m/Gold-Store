@@ -13,7 +13,7 @@ export default function ProductsPage() {
     karat: "",
     type: "",
     minPrice: 0,
-    maxPrice: 5000,
+    maxPrice: 5000 as number,
     rating: 0,
   });
 
