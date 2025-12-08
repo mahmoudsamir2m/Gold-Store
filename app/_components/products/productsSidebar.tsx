@@ -32,7 +32,10 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
     rating: false,
   });
 
-  const toggleSection = (section: string) => {
+  // ✅ تعريف النوع الآمن
+  type SectionKey = keyof typeof openSections;
+
+  const toggleSection = (section: SectionKey) => {
     setOpenSections((prev) => ({
       ...prev,
       [section]: !prev[section],
