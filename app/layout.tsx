@@ -1,8 +1,9 @@
 import ReactQueryProvider from "./providers/ReactQueryProvider";
+import { Toaster } from "sonner";
 import "./globals.css";
-import Navbar from "./_components/Navbar/Navbar";
+import LayoutWrapper from "./_components/LayoutWrapper/LayoutWrapper";
 import { Tajawal } from "next/font/google";
-import Footer from "./_components/Footer/Footer";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const tajawal = Tajawal({
   subsets: ["arabic"],
@@ -39,9 +40,10 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body className={tajawal.className}>
         <ReactQueryProvider>
-          <Navbar />
-          {children}
-          <Footer/>
+          <AuthProvider>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </AuthProvider>
+          <Toaster richColors />
         </ReactQueryProvider>
       </body>
     </html>

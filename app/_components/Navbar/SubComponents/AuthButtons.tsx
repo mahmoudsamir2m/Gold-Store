@@ -28,7 +28,7 @@ export default function AuthButtons() {
   return (
     <div className="flex items-center gap-1 md:gap-2 lg:gap-3 xl:gap-4">
       <Link
-        href="/signin"
+        href="/login"
         className="text-xs lg:text-sm xl:text-base  px-2 md:px-3 lg:px-4 xl:px-5 py-1 md:py-2 font-medium hover:bg-yellow-500 hover:text-black rounded transition"
       >
         تسجيل دخول
