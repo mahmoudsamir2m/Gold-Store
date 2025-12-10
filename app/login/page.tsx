@@ -62,7 +62,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md md:max-w-lg">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center gap-2 mb-6">
             <Image src="/icon-gold.png" alt="دهبنا" width={100} height={100} />
@@ -167,7 +167,7 @@ export default function LoginPage() {
             disabled={isLoading}
           >
             <FcGoogle className="w-5 h-5 ml-2" />
-                        المتابعة باستخدام Google
+            المتابعة باستخدام Google
           </Button>
         </div>
 
