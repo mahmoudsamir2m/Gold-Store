@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navlink } from "./types/navlinks";
-import { FaHome,FaShoppingBag, FaRocketchat, FaUser, FaShoppingCart } from "react-icons/fa";
+import { FaHome,FaShoppingBag, FaGem, FaUser, FaShoppingCart } from "react-icons/fa";
 
 
 
@@ -10,7 +10,7 @@ export default function NavMobile() {
   const links: navlink[] = [
     { name: "الرئيسية", icon: FaHome, href: "/" },
     { name: "المنتجات", icon: FaShoppingBag, href: "/products" },
-    { name: "اتصل بنا", icon: FaRocketchat, href: "/contact" },
+    { name: "اسعار الدهب والفضة", icon: FaGem, href: "/gold-silver" },
     { name: "حسابي", icon: FaUser, href: "/account" },
     { name: "العربة", icon: FaShoppingCart, href: "/cart" },
   ];

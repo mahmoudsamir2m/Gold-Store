@@ -13,7 +13,7 @@ import SearchBar from "./SubComponents/SearchBar";
 const navLinks: NavLinkItem[] = [
   { name: "الرئيسية", href: "/" },
   { name: "المنتجات", href: "/products" },
-  { name: "اتصل بنا", href: "/contact" },
+  { name: "اسعار الدهب والفضة", href: "/gold-silver" },
 ];
 
 export default function Nav({ isMobile }: { isMobile: boolean }) {
