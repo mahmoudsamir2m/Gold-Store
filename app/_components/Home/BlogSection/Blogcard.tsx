@@ -10,7 +10,7 @@ interface GoldCardProps {
   description: string;
   date: string;
   author: string;
-  href: string;
+  slug: string;
 }
 
 export default function GoldCard({
@@ -19,10 +19,10 @@ export default function GoldCard({
   description,
   date,
   author,
-  href,
+  slug,
 }: GoldCardProps) {
   return (
-    <Link href={href} className="group block">
+    <Link href={`/blog/${slug}`} className="group block">
       <div
         className="
         bg-white rounded-xl p-4 border-2 border-primary-500 shadow-lg

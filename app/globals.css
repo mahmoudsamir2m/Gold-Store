@@ -4,11 +4,10 @@
 @import "swiper/css/thumbs";
 @import "tw-animate-css";
 
-
 @theme {
-  --color-primary-500: #FFC700;
-  --color-primary-600: #F0B100;
-  --color-secondary-500: #01261C;
+  --color-primary-500: #ffc700;
+  --color-primary-600: #f0b100;
+  --color-secondary-500: #01261c;
 }
 /* navbar */
 .nav-link {
@@ -16,12 +15,12 @@
 }
 
 .active {
-  color:#FFC700 ;
+  color: #ffc700;
 }
 /* home */
 .swiper-button-next,
 .swiper-button-prev {
-  color: #FFC700!important;
+  color: #ffc700 !important;
 }
 
 .after::after {
@@ -31,12 +30,10 @@
   bottom: -10px;
   height: 5px;
   width: 50%;
-  background-color: #F0B100;
+  background-color: #f0b100;
   transition: width 0.4s ease-in-out;
   border-radius: 4px;
 }
 .after:hover::after {
   width: 100%;
 }
-
-
