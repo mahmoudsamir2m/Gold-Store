@@ -17,7 +17,7 @@ interface AuthContextType {
   signup: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   resetPassword: (email: string) => Promise<void>;
-  updateUser: (updates: Partial<User>) => void;
+  updateUser: (updates: Partial<User>) => void; // مطلوب
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // تحميل المستخدم من التخزين المحلي
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -39,17 +40,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  // دالة لتحديث بيانات المستخدم
+  const updateUser = (updates: Partial<User>) => {
+    setUser((prev) => {
+      const updated = prev ? { ...prev, ...updates } : null;
+      if (updated) localStorage.setItem("user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       const mockUser: User = {
         id: Math.random().toString(36).substr(2, 9),
         email,
         name: email.split("@")[0],
       };
-
       localStorage.setItem("user", JSON.stringify(mockUser));
       setUser(mockUser);
     } finally {
@@ -61,7 +69,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       const mockUser: User = {
         id: Math.random().toString(36).substr(2, 9),
         email: "user@gmail.com",
@@ -69,7 +76,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar:
           "https://ui-avatars.com/api/?name=Google+User&background=random",
       };
-
       localStorage.setItem("user", JSON.stringify(mockUser));
       setUser(mockUser);
     } finally {
@@ -81,13 +87,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       const mockUser: User = {
         id: Math.random().toString(36).substr(2, 9),
         email,
         name,
       };
-
       localStorage.setItem("user", JSON.stringify(mockUser));
       setUser(mockUser);
     } finally {
@@ -120,6 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signup,
         logout,
         resetPassword,
+        updateUser,
       }}
     >
       {children}
