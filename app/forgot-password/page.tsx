@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-
 const forgotPasswordSchema = z.object({
   email: z.string().email("الرجاء إدخال بريد إلكتروني صحيح"),
 });

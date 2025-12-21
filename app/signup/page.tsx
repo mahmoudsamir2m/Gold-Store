@@ -89,7 +89,7 @@ export default function SignupPage() {
       className="min-h-screen bg-white flex items-center justify-center px-4 py-12 "
       dir="rtl"
     >
-      <div className="w-full max-w-md md:max-w-lg ">
+      <div className="w-full max-w-md md:max-w-lg shadow-2xl p-12 rounded-xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-6">
             <Image src="/icon-gold.png" alt="دهبنا" width={100} height={100} />
