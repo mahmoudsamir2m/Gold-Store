@@ -80,7 +80,7 @@ export default function PaymentPage() {
             </div>
             <button
               type="submit"
-              className="bg-green-500 text-white px-6 py-3 rounded"
+              className="bg-green-600 text-white px-6 py-3 rounded"
             >
               تأكيد الطلب (دفع عند التسليم)
             </button>
