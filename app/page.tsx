@@ -29,7 +29,7 @@ export default function Home() {
         description="نصنع مجوهرات ذهبية خالدة بالدقة والشغف والحرفية التي تتوارثها الأجيال."
         link="/about"
         buttonText="المزيد عنا"
-        imageSrc="/jewelry-store$.png"
+        imageSrc=""
       />
       <CategoriesSection />
       <AboutSection

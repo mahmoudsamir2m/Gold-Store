@@ -1,17 +1,14 @@
-// app/_components/products/productsSidebar.tsx
-
 "use client";
 
 import { useState } from "react";
 
-// تعريف Props بشكل صحيح - maxPrice من نوع number وليس literal
 interface Props {
   filters: {
     metal: "gold" | "silver" | "";
     karat: string;
     type: string;
     minPrice: number;
-    maxPrice: number; // ✅ تم التصحيح: كان 5000 ❌
+    maxPrice: number;
     rating: number;
   };
   onFilterChange: React.Dispatch<
@@ -35,7 +32,6 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
     rating: false,
   });
 
-  // تحديد النوع الآمن لـ section
   type SectionKey = keyof typeof openSections;
 
   const toggleSection = (section: SectionKey) => {
@@ -57,13 +53,29 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
           { value: "21", label: "21 عيار" },
           { value: "18", label: "18 عيار" },
         ];
-
+        // خيارات النوع
+const typeLabels: Record<string, string> = {
+  Rings: "خواتم",
+  Necklaces: "سلاسل",
+  Bracelets: "أساور",
+  Earrings: "أقراط",
+};
   return (
     <div className="w-full bg-white rounded-lg p-4 text-sm space-y-4 rtl border max-h-screen overflow-y-auto">
       {/* قسم المعادن */}
       <div>
         <h3 className="font-semibold text-gray-800 mb-2">المعادن</h3>
         <div className="flex gap-2 mb-4">
+          <button
+            onClick={() => onFilterChange({ ...filters, metal: "", karat: "" })}
+            className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
+              filters.metal === ""
+                ? "bg-yellow-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            الكل
+          </button>
           <button
             onClick={() =>
               onFilterChange({ ...filters, metal: "gold", karat: "" })
@@ -102,6 +114,16 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
         </button>
         {openSections.karat && (
           <div className="space-y-2 pr-2 mt-2">
+            <label className="flex items-center space-x-2 space-x-reverse">
+              <input
+                type="radio"
+                name="karat"
+                checked={filters.karat === ""}
+                onChange={() => onFilterChange({ ...filters, karat: "" })}
+                className="w-4 h-4 me-1.5"
+              />
+              <span className="text-gray-700">الكل</span>
+            </label>
             {karatOptions.map(({ value, label }) => (
               <label
                 key={value}
@@ -112,7 +134,7 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
                   name="karat"
                   checked={filters.karat === value}
                   onChange={() => onFilterChange({ ...filters, karat: value })}
-                  className="w-4 h-4"
+                  className="w-4 h-4 me-1.5"
                 />
                 <span className="text-gray-700">{label}</span>
               </label>
@@ -136,48 +158,27 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
               <input
                 type="radio"
                 name="type"
-                checked={filters.type === "Rings"}
-                onChange={() => onFilterChange({ ...filters, type: "Rings" })}
-                className="w-4 h-4"
+                checked={filters.type === ""}
+                onChange={() => onFilterChange({ ...filters, type: "" })}
+                className="w-4 h-4 me-1.5"
               />
-              <span className="text-gray-700">خواتم</span>
+              <span className="text-gray-700">الكل</span>
             </label>
-            <label className="flex items-center space-x-2 space-x-reverse">
-              <input
-                type="radio"
-                name="type"
-                checked={filters.type === "Necklaces"}
-                onChange={() =>
-                  onFilterChange({ ...filters, type: "Necklaces" })
-                }
-                className="w-4 h-4"
-              />
-              <span className="text-gray-700">سلاسل</span>
-            </label>
-            <label className="flex items-center space-x-2 space-x-reverse">
-              <input
-                type="radio"
-                name="type"
-                checked={filters.type === "Bracelets"}
-                onChange={() =>
-                  onFilterChange({ ...filters, type: "Bracelets" })
-                }
-                className="w-4 h-4"
-              />
-              <span className="text-gray-700">أساور</span>
-            </label>
-            <label className="flex items-center space-x-2 space-x-reverse">
-              <input
-                type="radio"
-                name="type"
-                checked={filters.type === "Earrings"}
-                onChange={() =>
-                  onFilterChange({ ...filters, type: "Earrings" })
-                }
-                className="w-4 h-4"
-              />
-              <span className="text-gray-700">أقراط</span>
-            </label>
+            {["Rings", "Necklaces", "Bracelets", "Earrings"].map((t) => (
+              <label
+                key={t}
+                className="flex items-center space-x-2 space-x-reverse"
+              >
+                <input
+                  type="radio"
+                  name="type"
+                  checked={filters.type === t}
+                  onChange={() => onFilterChange({ ...filters, type: t })}
+                  className="w-4 h-4 me-1.5"
+                />
+                <span className="text-gray-700">{typeLabels[t]}</span>
+              </label>
+            ))}
           </div>
         )}
       </div>
@@ -223,8 +224,8 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
         )}
       </div>
 
-      {/* قسم التقييم */}
-      <div>
+      {/* قسم التقييم (اختياري، ممكن تفعيله) */}
+      {/* <div>
         <button
           onClick={() => toggleSection("rating")}
           className="flex justify-between w-full font-semibold text-gray-800 py-2"
@@ -249,12 +250,11 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
               className="w-full accent-yellow-500"
             />
             <p className="text-xs text-gray-600 mt-1">
-              من ⭐️{" "}
-              {filters.rating > 0 ? filters.rating.toFixed(1) : "أي تقييم"}
+              من ⭐️ {filters.rating > 0 ? filters.rating.toFixed(1) : "أي تقييم"}
             </p>
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
