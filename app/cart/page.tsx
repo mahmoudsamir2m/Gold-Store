@@ -10,7 +10,7 @@ export default function CartPage() {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">سلة التسوق</h1>
-      {cart.length === 0 ? (
+      {cart.length === 1 ? (
         <p>سلة التسوق فارغة</p>
       ) : (
         <>

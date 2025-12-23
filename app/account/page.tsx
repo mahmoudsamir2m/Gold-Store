@@ -36,7 +36,8 @@ export default function ProfilePage() {
       {/* ===== Profile Info ===== */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>البيانات الشخصية</CardTitle>
+          <CardTitle className="text-yellow-700">البيانات الشخصية</CardTitle>
+
           <Button
             className="border-yellow-500 text-yellow-600 hover:bg-yellow-600 hover:text-white"
             variant="outline"
@@ -70,111 +71,30 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* ===== Tabs Section ===== */}
-      <Tabs defaultValue="active" className="w-full">
-        <TabsList className="grid grid-cols-3 w-full bg-yellow-500/10">
-          <TabsTrigger
-            value="active"
-            className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white hover:bg-yellow-600 hover:text-white"
-          >
-            طلبات قيد التنفيذ
-          </TabsTrigger>
-          <TabsTrigger
-            value="completed"
-            className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white hover:bg-yellow-600 hover:text-white"
-          >
-            طلبات منفذة
-          </TabsTrigger>
-          <TabsTrigger
-            value="selling"
-            className="data-[state=active]:bg-yellow-500 data-[state=active]:text-white hover:bg-yellow-600 hover:text-white"
-          >
-            المعروض للبيع
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Active Orders */}
-        <TabsContent value="active">
-          <Card>
-            <CardHeader>
-              <CardTitle>الطلبات الحالية</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {activeOrders.map((order) => (
-                <div
-                  key={order.id}
-                  className="flex items-center justify-between border rounded-lg p-3"
-                >
-                  <div>
-                    <p className="font-medium">{order.id}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {order.total}
-                    </p>
-                  </div>
-                  <Badge className="bg-yellow-500 text-white hover:bg-yellow-600">
-                    {order.status}
-                  </Badge>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Completed Orders */}
-        <TabsContent value="completed">
-          <Card>
-            <CardHeader>
-              <CardTitle>الطلبات المنفذة</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {completedOrders.map((order) => (
-                <div
-                  key={order.id}
-                  className="flex items-center justify-between border rounded-lg p-3"
-                >
-                  <div>
-                    <p className="font-medium">{order.id}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {order.total}
-                    </p>
-                  </div>
-                  <Badge className="bg-yellow-500 text-white hover:bg-yellow-600">
-                    {order.status}
-                  </Badge>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Selling Items */}
-        <TabsContent value="selling">
-          <Card>
-            <CardHeader>
-              <CardTitle>المنتجات المعروضة للبيع</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {sellingItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between border rounded-lg p-3"
-                >
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {item.price}
-                    </p>
-                  </div>
-                  <Badge className="border-yellow-500 text-yellow-600 hover:bg-yellow-600 hover:text-white">
-                    {item.status}
-                  </Badge>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Selling Items */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-yellow-700">
+            المنتجات المعروضة للبيع
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {sellingItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between border rounded-lg p-3"
+            >
+              <div>
+                <p className="font-medium">{item.name}</p>
+                <p className="text-sm text-muted-foreground">{item.price}</p>
+              </div>
+              <Badge className="border-yellow-500 text-yellow-600 hover:bg-yellow-600 hover:text-white">
+                {item.status}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }

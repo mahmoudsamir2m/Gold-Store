@@ -24,7 +24,7 @@ export default function AuthButtons() {
         href="/signup"
         className="text-xs lg:text-sm px-4 py-1 bg-primary-500 hover:bg-transparent border border-primary-500 text-black hover:text-white font-bold rounded transition"
       >
-        اشتراك
+       انشاء حساب
       </Link>
     </div>
   );
