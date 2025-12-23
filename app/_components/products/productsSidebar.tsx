@@ -70,7 +70,10 @@ export default function ProductsSidebar({ filters, onFilterChange }: Props) {
     Necklaces: "سلاسل",
     Bracelets: "أساور",
     Earrings: "أقراط",
+    Bars: "سبائك",
+    Coins: "عملات",
   };
+
 
   return (
     <div className="w-full bg-white rounded-lg p-4 text-sm space-y-4 rtl border max-h-screen overflow-y-auto">
