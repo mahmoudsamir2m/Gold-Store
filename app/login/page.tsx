@@ -144,7 +144,7 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200" />
@@ -156,7 +156,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button
+           <Button
             type="button"
             variant="outline"
             className="w-full h-12 mt-4 border-gray-200 hover:bg-gray-50"
@@ -165,8 +165,8 @@ export default function LoginPage() {
           >
             <FcGoogle className="w-5 h-5 ml-2" />
             المتابعة باستخدام Google
-          </Button>
-        </div>
+          </Button> 
+        </div> */}
 
         <p className="text-center mt-6 text-gray-600">
           لا تملك حساب؟{" "}

@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function CategoryCard({ title, image }: Props) {
   return (
     <Link
-      href={`/categories/${title}`}
+      href={`/products`}
       className="relative block rounded-2xl overflow-hidden shadow-lg group"
     >
       <div className="relative overflow-hidden">
