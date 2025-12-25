@@ -1,27 +1,40 @@
-
+// app/page.tsx
+import PricesTicker from "./_components/Home/PricesTicker/PricesTicker";
 import AboutSection from "./_components/Home/AboutSection/AboutSection";
 import BlogSection from "./_components/Home/BlogSection/BlogSection";
 import CategoriesSection from "./_components/Home/CategoriesSection/CategoriesSection";
 import HeroSection from "./_components/Home/HeroSection/HeroSection";
 import ProductsSection from "./_components/Home/ProductsSection/ProductsSection";
 
-export default function Home() {
+// ✅ عرّف دالة جلب الأسعار هنا (أو استوردها من ملف منفصل)
+async function fetchMetalPrices() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/metalsPrices`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("فشل جلب الأسعار");
+    const data = await res.json();
+
+    // تأكد أن البيانات صحيحة
+    if (typeof data.gold === "number" && typeof data.silver === "number") {
+      return data;
+    } else {
+      throw new Error("بيانات غير صالحة");
+    }
+  } catch (error) {
+    console.warn("استخدام أسعار افتراضية:", error);
+    return { gold: 2000, silver: 25 };
+  }
+}
+
+export default async function Home() {
+  const prices = await fetchMetalPrices(); // ✅ الآن معرّفة
+
   return (
     <main>
-      <div className="bg-gray-800 hidden lg:block  lg:text-xs xl:text-sm">
-        <div className="container mx-auto flex justify-between items-center px-12 py-4 text-white font-semibold">
-          <div className=" flex gap-10 justify-center items-center">
-            <h3>سعر الدهب عيار24 : ج6000</h3>
-            <h3>سعر الدهب عيار21 : ج5000</h3>
-            <h3>سعر الدهب عيار18 : ج4000</h3>
-          </div>
-          <div className=" flex gap-10 justify-center items-center">
-            <h3>سعر الفضة عيار911 : ج600</h3>
-            <h3>سعر الفضة عيار921 : ج500</h3>
-            <h3>سعر الفضة عيار918 : ج400</h3>
-          </div>
-        </div>
-      </div>
+      <PricesTicker prices={prices} />
       <HeroSection />
       <ProductsSection />
       <AboutSection

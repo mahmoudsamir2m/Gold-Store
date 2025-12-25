@@ -33,13 +33,6 @@ export default function NavMobile() {
             label="الأسعار"
             pathName={pathName}
           />
-          <NavItem
-            href="/cart"
-            icon={FaShoppingCart}
-            label="العربة"
-            pathName={pathName}
-          />
-
           {/* حسابي */}
           <li>
             {user ? (

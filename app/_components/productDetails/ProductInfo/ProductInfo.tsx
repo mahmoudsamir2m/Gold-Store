@@ -1,4 +1,3 @@
-import AddToCartButton from "@/app/_components/AddToCartButton/AddToCartButton";
 import { Product } from "@/app/_components/productDetails/types/types";
 
 export default function ProductInfo({ product }: { product: Product }) {
@@ -42,7 +41,6 @@ export default function ProductInfo({ product }: { product: Product }) {
         )}
       </div>
 
-      <AddToCartButton title={product.title} />
 
       <div className="text-right space-y-4 mt-6">
         <div>

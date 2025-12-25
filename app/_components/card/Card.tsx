@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { ProductCardProps } from "./types/ProductCardProps";
-import { FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
 
 export default function Card({
@@ -14,9 +13,6 @@ export default function Card({
   originalPrice,
   width,
 }: ProductCardProps) {
-  const handleAddToCart = () => {
-    alert("تم إضافة المنتج للسلة!");
-  };
 
   return (
     <div
@@ -58,15 +54,6 @@ export default function Card({
               </span>
             )}
           </div>
-          {/* Shopping Cart Icon */}
-          {
-            <button
-              onClick={handleAddToCart}
-              className="text-primary-500 hover:text-primary-600 transition-colors duration-200 focus:outline-none"
-            >
-              <FaShoppingCart className="h-5 w-5" />
-            </button>
-          }
         </div>
         {/* View Details Button */}
         <Link

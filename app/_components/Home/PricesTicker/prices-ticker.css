@@ -1,0 +1,18 @@
+.ticker-track {
+  display: inline-flex;
+  gap: 2rem;
+  white-space: nowrap;
+  animation: tickerMove 40s linear infinite;
+  min-width: fit-content;
+}
+
+
+@keyframes tickerMove {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+
+.prices-ticker:hover .ticker-track {
+  animation-play-state: paused;
+}

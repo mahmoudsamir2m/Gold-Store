@@ -47,18 +47,8 @@ export default function Nav({ isMobile }: { isMobile: boolean }) {
         {/* Actions */}
         <div className="flex items-center gap-2 md:gap-3 lg:gap-4 xl:gap-6">
           <SearchBar isMobile={isMobile} />
-          {!isMobile && (
-            <>
-              <Link
-                href="/cart"
-                className="hover:text-primary-500 transition flex"
-              >
-                <FaShoppingCart className="h-4 w-4 lg:h-5 lg:w-5 xl:h-6 xl:w-6" />
-              </Link>
-              <AuthButtons />
-            </>
-          )}
-          <CountrySelector/>
+          {!isMobile && <AuthButtons />}
+          <CountrySelector />
         </div>
       </nav>
     </header>
