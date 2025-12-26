@@ -8,11 +8,12 @@ import { FaFilter } from "react-icons/fa";
 
 // تعريف نوع الفلاتر
 interface FilterState {
-  metal: "gold" | "silver" | "";
+  metal: "" | "gold" | "silver";
+  type: "" | "jewelry" | "bullion";
   karat: string;
-  type: string;
   minPrice: number;
   maxPrice: number;
+  city: string;
   rating: number;
 }
 
@@ -24,6 +25,7 @@ export default function ProductsPage() {
     type: "",
     minPrice: 0,
     maxPrice: 5000, // ✅ الرقم 5000 مقبول لأنه من نوع number
+    city: "",
     rating: 0,
   });
 

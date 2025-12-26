@@ -9,12 +9,18 @@ interface Filters {
   minPrice: number;
   maxPrice: number;
   city: string;
+  rating: number;
 }
 
 interface Props {
   filters: Filters;
   onFilterChange: React.Dispatch<React.SetStateAction<Filters>>;
   userCountry?: string;
+}
+
+interface MetalButton {
+  v: "" | "gold" | "silver";
+  l: string;
 }
 
 export default function ProductsSidebar({
@@ -108,11 +114,13 @@ export default function ProductsSidebar({
       <div>
         <h3 className="font-semibold mb-2">المعدن</h3>
         <div className="flex gap-2">
-          {[
-            { v: "", l: "الكل" },
-            { v: "gold", l: "ذهب" },
-            { v: "silver", l: "فضة" },
-          ].map((b) => (
+          {(
+            [
+              { v: "", l: "الكل" },
+              { v: "gold", l: "ذهب" },
+              { v: "silver", l: "فضة" },
+            ] as MetalButton[]
+          ).map((b) => (
             <button
               key={b.v}
               onClick={() =>
