@@ -153,6 +153,7 @@ export default function ProductsPage() {
                   type: "",
                   minPrice: 0,
                   maxPrice: 5000,
+                  city: "",
                   rating: 0,
                 })
               }
