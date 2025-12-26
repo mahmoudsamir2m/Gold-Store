@@ -44,7 +44,7 @@ export default async function Home() {
         buttonText="المزيد عنا"
         imageSrc=""
       />
-      <CategoriesSection />
+      {/* <CategoriesSection /> */}
       <AboutSection
         title="استثمر في الفخامة... واربح المفاجأة!"
         description="مع كل شراء ذهب، افتح بابًا لفرصة فريدة للفوز بهدية استثنائية تليق بذوقك الرفيع."

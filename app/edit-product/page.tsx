@@ -3,9 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { productFormSchema } from "./schemas/productSchema";
-import type { ProductFormData, MetalType } from "./types/ProductFormTypes";
+import { useRouter, useSearchParams } from "next/navigation";
+import { productFormSchema } from "../add-product/schemas/productSchema";
+import type {
+  ProductFormData,
+  MetalType,
+} from "../add-product/types/ProductFormTypes";
 import {
   FiTag,
   FiUser,
@@ -91,20 +94,66 @@ const CITIES: Record<string, string[]> = {
   ],
 };
 
-export default function AddProductPage() {
+export default function EditProductPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [formValues, setFormValues] = useState<ProductFormData>({
+    title: "",
+    category: "bullion",
+    type: "Bars",
+    metal: "gold",
+    karat: "24",
+    price: 0,
+    description: "",
+    images: [],
+    name: "",
+    phone: "",
+    email: "",
+    country: "مصر",
+    city: "القاهرة",
+  });
+
+  const editParam = searchParams.get("data");
+
+  // ✅ تهيئة البيانات عند التحميل
+  useEffect(() => {
+    if (editParam) {
+      try {
+        const data = JSON.parse(
+          decodeURIComponent(editParam)
+        ) as Partial<ProductFormData>;
+        setFormValues((prev) => ({
+          ...prev,
+          ...data,
+          images: [], // لا نستخدم الصور القديمة
+        }));
+      } catch (e) {
+        console.error("فشل تحليل بيانات التعديل", e);
+        router.push("/account"); // العودة للحساب في حالة خطأ
+      }
+    } else {
+      router.push("/account"); // العودة للحساب إذا لم تكن هناك بيانات
+    }
+  }, [editParam, router]);
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
+    defaultValues: formValues,
   });
+
+  // Reset form when formValues change (for editing)
+  useEffect(() => {
+    reset(formValues);
+  }, [formValues, reset]);
 
   const selectedCategory = watch("category");
   const selectedMetal = watch("metal");
@@ -137,9 +186,9 @@ export default function AddProductPage() {
   };
 
   const onSubmit = async (data: ProductFormData) => {
-    console.log("تم حفظ المنتج:", data);
+    console.log("تم حفظ التعديلات:", data);
     previewImages.forEach(URL.revokeObjectURL);
-    router.push("/profile");
+    router.push("/account");
   };
 
   return (
@@ -147,7 +196,7 @@ export default function AddProductPage() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-center text-yellow-600">
-            إضافة منتج جديد
+            تعديل المنتج
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -393,7 +442,7 @@ export default function AddProductPage() {
               disabled={isSubmitting}
               className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-medium rounded-lg transition"
             >
-              {isSubmitting ? "جاري الحفظ..." : "إضافة المنتج"}
+              {isSubmitting ? "جاري الحفظ..." : "حفظ التعديلات"}
             </Button>
           </form>
         </CardContent>

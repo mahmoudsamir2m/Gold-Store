@@ -1,14 +1,8 @@
 export type MetalType = "gold" | "silver";
 export type KaratType = string;
 
-export type CategoryType =
-  | "سلسلة"
-  | "خاتم"
-  | "سوار"
-  | "أقراط"
-  | "خاتم زفاف"
-  | "سبيكة"
-  | "عملة";
+export type CategoryType = "jewelry" | "bullion"; // ملاحظة: في الفورم، القيمة "jewelry" مش "سلسلة"!
+
 export type TypeType =
   | "Necklaces"
   | "Rings"
@@ -17,6 +11,8 @@ export type TypeType =
   | "Wedding Bands"
   | "Bars"
   | "Coins";
+
+export type CountryType = "مصر" | "السعودية" | "الإمارات";
 
 export interface ProductFormData {
   title: string;
@@ -30,6 +26,6 @@ export interface ProductFormData {
   name: string;
   phone: string;
   email: string;
-  country: string;
+  country: CountryType;
   city: string;
 }
