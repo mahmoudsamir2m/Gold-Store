@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -94,7 +94,7 @@ const CITIES: Record<string, string[]> = {
   ],
 };
 
-export default function EditProductPage() {
+function EditProductForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -448,5 +448,13 @@ export default function EditProductPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function EditProductPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditProductForm />
+    </Suspense>
   );
 }
