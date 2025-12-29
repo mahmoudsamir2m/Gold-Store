@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FaRegUser, FaUser, FaPlusCircle, FaSignOutAlt } from "react-icons/fa";
+import { HiOutlineShieldCheck } from "react-icons/hi";
 import { useState } from "react";
 
 import {
@@ -68,7 +69,12 @@ export default function UserMenu({
             إضافة منتج
           </Link>
         </DropdownMenuItem>
-
+        <DropdownMenuItem asChild>
+          <Link href="/privacy-policy" className="flex items-center gap-2">
+            <HiOutlineShieldCheck className="w-4 h-4" />
+            سياسة الخصوصية
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
