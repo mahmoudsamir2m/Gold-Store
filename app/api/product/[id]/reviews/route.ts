@@ -3,9 +3,9 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const productId = params.id;
+  const { id: productId } = await params;
   const { searchParams } = new URL(request.url);
   const page = searchParams.get("page") || "1";
 
@@ -18,7 +18,10 @@ export async function GET(
     );
 
     if (!res.ok) {
-      return Response.json({ error: "Failed to fetch reviews" }, { status: res.status });
+      return Response.json(
+        { error: "Failed to fetch reviews" },
+        { status: res.status }
+      );
     }
 
     const data = await res.json();
@@ -34,14 +37,14 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const authHeader = request.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
   const token = authHeader.split(" ")[1];
-  const productId = params.id;
+  const { id: productId } = await params;
 
   try {
     const body = await request.json();
@@ -66,7 +69,7 @@ export async function POST(
       );
     }
 
-    return Response.json({ success: true,  result.data });
+    return Response.json({ success: true, data: result.data });
   } catch (error: any) {
     console.error("Add review error:", error.message);
     return Response.json({ error: "Network error" }, { status: 500 });

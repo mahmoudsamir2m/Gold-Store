@@ -3,14 +3,14 @@ import { NextRequest } from "next/server";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; reviewIt reviewId string } }
+  { params }: { params: Promise<{ id: string; reviewId: string }> }
 ) {
   const authHeader = request.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
   const token = authHeader.split(" ")[1];
-  const { id: productId, reviewId } = params;
+  const { id: productId, reviewId } = await params;
 
   try {
     const body = await request.json();
@@ -38,7 +38,7 @@ export async function PUT(
       );
     }
 
-    return Response.json({ success: true,  result.data });
+    return Response.json({ success: true, data: result.data });
   } catch (error: any) {
     console.error("Update review error:", error.message);
     return Response.json({ error: "Network error" }, { status: 500 });
@@ -47,14 +47,14 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; reviewId: string } }
+  { params }: { params: Promise<{ id: string; reviewId: string }> }
 ) {
   const authHeader = request.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
   const token = authHeader.split(" ")[1];
-  const { id: productId, reviewId } = params;
+  const { id: productId, reviewId } = await params;
 
   try {
     const res = await fetch(
