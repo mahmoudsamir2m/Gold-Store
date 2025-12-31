@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const authHeader = request.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -10,7 +10,7 @@ export async function DELETE(
   }
 
   const token = authHeader.split(" ")[1];
-  const productId = params.id;
+  const { id: productId } = await params;
 
   try {
     const res = await fetch(

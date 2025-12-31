@@ -14,7 +14,6 @@ import ProductInfo from "@/app/_components/productDetails/ProductInfo/ProductInf
 import ProductReviews from "@/app/_components/productDetails/ProductReviews/ProductReviews";
 import RelatedProducts from "@/app/_components/productDetails/RelatedProducts/RelatedProducts";
 
-
 const decodeUnicode = (str: string): string => {
   if (typeof str !== "string") return "";
   try {
@@ -126,14 +125,17 @@ export default function ProductDetailPage() {
     if (id) fetchData();
   }, [id, router]);
 
-  const handleAddReview = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddReview = async (review: {
+    rating: number;
+    title: string;
+    comment: string;
+  }) => {
     if (!token) {
       toast.error("يجب تسجيل الدخول لإضافة تقييم");
       return;
     }
 
-    const { rating, title, comment } = reviewForm;
+    const { rating, title, comment } = review;
     if (!title.trim() || !comment.trim()) {
       toast.error("يرجى ملء جميع الحقول");
       return;
@@ -178,7 +180,6 @@ export default function ProductDetailPage() {
         });
       }
 
-      setReviewForm({ rating: 5, title: "", comment: "" });
       toast.success("تم إضافة التقييم بنجاح");
     } catch (error) {
       console.error("خطأ في إرسال التقييم:", error);

@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const COUNTRIES = ["egypt", "uae", "saudi"] as const;
 export type Country = (typeof COUNTRIES)[number];
 
@@ -17,8 +16,8 @@ export const profileSchema = z
     phone: z
       .string()
       .regex(/^\d{10}$/, "يجب أن يكون رقم الهاتف 10 أرقام (مثال: 1012345678)"),
-    country: z.enum(COUNTRIES, {
-      errorMap: () => ({ message: "يرجى اختيار دولة من القائمة" }),
+    country: z.enum(COUNTRIES).refine((val) => COUNTRIES.includes(val), {
+      message: "يرجى اختيار دولة من القائمة",
     }),
     city: z.string().min(2, "المدينة يجب أن تكون على الأقل حرفين"),
     password: z.string().optional(),
