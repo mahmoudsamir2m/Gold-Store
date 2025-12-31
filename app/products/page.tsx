@@ -60,14 +60,15 @@ export default function ProductsPage() {
         rating: filters.rating.toString(),
       });
 
+      // ❌ لا حاجة للـ headers أو التوكِن
       const res = await fetch(`/api/products?${params.toString()}`, {
         cache: "no-store",
       });
 
       const data = await res.json();
 
-      setProducts(data.products);
-      setTotal(data.total);
+      setProducts(data.products || []);
+      setTotal(data.total || 0);
       setLoading(false);
     };
 

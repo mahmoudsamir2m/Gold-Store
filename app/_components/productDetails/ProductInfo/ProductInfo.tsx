@@ -1,3 +1,4 @@
+// app/_components/productDetails/ProductInfo/ProductInfo.tsx
 import { Product } from "@/app/_components/productDetails/types/types";
 
 export default function ProductInfo({ product }: { product: Product }) {
@@ -30,17 +31,12 @@ export default function ProductInfo({ product }: { product: Product }) {
         </span>
       </div>
 
+      {/* ✅ السعر فقط — بدون originalPrice */}
       <div className="flex items-center justify-end gap-3">
         <span className="text-3xl font-bold text-gray-900">
-          ${product.price.toFixed(2)}
+          {product.price.toFixed(2)} ج.م
         </span>
-        {product.originalPrice && (
-          <span className="text-sm text-gray-500 line-through">
-            ${product.originalPrice.toFixed(2)}
-          </span>
-        )}
       </div>
-
 
       <div className="text-right space-y-4 mt-6">
         <div>

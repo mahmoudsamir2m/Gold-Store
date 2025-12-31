@@ -1,146 +1,75 @@
-import { NextResponse } from "next/server";
+"use server";
 
-// Mock data for products (fallback)
-const mockProducts = [
-  {
-    id: 1,
-    title: "خاتم ذهب 24 عيار",
-    category: "jewelry",
-    metal: "gold",
-    karat: "24",
-    price: 1500,
-    originalPrice: 1600,
-    rating: 4.5,
-    city: "القاهرة",
-    images: ["/gold-jewelry-circle.png"],
-  },
-  {
-    id: 2,
-    title: "سبيكة ذهب 24 عيار",
-    category: "bullion",
-    metal: "gold",
-    karat: "24",
-    price: 2000,
-    originalPrice: 2100,
-    rating: 4.8,
-    city: "الرياض",
-    images: ["/gold-bottom.png"],
-  },
-  {
-    id: 3,
-    title: "أقراط فضة 925",
-    category: "jewelry",
-    metal: "silver",
-    karat: "925",
-    price: 300,
-    originalPrice: 350,
-    rating: 4.2,
-    city: "دبي",
-    images: ["/Jewellery.webp"],
-  },
-  {
-    id: 4,
-    title: "عملة ذهب 22 عيار",
-    category: "bullion",
-    metal: "gold",
-    karat: "22",
-    price: 1800,
-    originalPrice: 1900,
-    rating: 4.7,
-    city: "القاهرة",
-    images: ["/gold-left.png"],
-  },
-  {
-    id: 5,
-    title: "سلسلة ذهب 18 عيار",
-    category: "jewelry",
-    metal: "gold",
-    karat: "18",
-    price: 1200,
-    originalPrice: 1300,
-    rating: 4.3,
-    city: "جدة",
-    images: ["/gold-right.png"],
-  },
-  {
-    id: 6,
-    title: "سبيكة فضة 925",
-    category: "bullion",
-    metal: "silver",
-    karat: "925",
-    price: 400,
-    originalPrice: 450,
-    rating: 4.1,
-    city: "الاسكندرية",
-    images: ["/jewelry-store$.png"],
-  },
-  // Add more products as needed
-];
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
+  const per_page = Math.max(
+    1,
+    Math.min(50, parseInt(searchParams.get("per_page") || "8", 10) || 8)
+  );
 
-  const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "8");
   const metal = searchParams.get("metal") || "";
   const karat = searchParams.get("karat") || "";
-  const type = searchParams.get("type") || "";
-  const minPrice = parseFloat(searchParams.get("minPrice") || "0");
-  const maxPrice = parseFloat(searchParams.get("maxPrice") || "5000");
+  const category = searchParams.get("category") || "";
+  const search = searchParams.get("search") || "";
   const city = searchParams.get("city") || "";
 
+  const min_price_raw = searchParams.get("min_price");
+  const max_price_raw = searchParams.get("max_price");
 
   try {
-    // Fetch from external API if URL is provided
-    const productsApiUrl = process.env.PRODUCTS_API_URL;
-    if (productsApiUrl) {
-      const apiUrl = new URL(productsApiUrl);
-      // Add query params to the external API
-      apiUrl.searchParams.set("page", page.toString());
-      apiUrl.searchParams.set("limit", limit.toString());
-      if (metal) apiUrl.searchParams.set("metal", metal);
-      if (karat) apiUrl.searchParams.set("karat", karat);
-      if (type) apiUrl.searchParams.set("type", type);
-      apiUrl.searchParams.set("minPrice", minPrice.toString());
-      apiUrl.searchParams.set("maxPrice", maxPrice.toString());
-      if (city) apiUrl.searchParams.set("city", city);
-      apiUrl.searchParams.set("rating", rating.toString());
+    const PRODUCTS_API_URL = "https://gold-stats.com/api/products";
 
-      const res = await fetch(apiUrl.toString(), {
-        cache: "no-store",
-      });
+    const apiUrl = new URL(PRODUCTS_API_URL);
+    apiUrl.searchParams.set("page", page.toString());
+    apiUrl.searchParams.set("per_page", per_page.toString());
 
-      if (!res.ok) throw new Error("External API fetch failed");
+    if (metal) apiUrl.searchParams.set("metal", metal);
+    if (karat) apiUrl.searchParams.set("karat", karat);
+    if (category) apiUrl.searchParams.set("category", category);
+    if (search) apiUrl.searchParams.set("search", search);
+    if (city) apiUrl.searchParams.set("city", city);
+    if (min_price_raw) apiUrl.searchParams.set("min_price", min_price_raw);
+    if (max_price_raw) apiUrl.searchParams.set("max_price", max_price_raw);
 
-      const data = await res.json();
+    // ❌ لا حاجة ل(headers Authorization لأن الـ API لا يتطلب مصادقة
+    const res = await fetch(apiUrl.toString(), {
+      cache: "no-store",
+      next: { revalidate: 0 },
+    });
 
-      // Assume the external API returns { products: [...], total: number }
-      return NextResponse.json(data);
+    if (!res.ok) {
+      console.error("External API error:", res.status, await res.text());
+      return NextResponse.json(
+        { products: [], total: 0 },
+        { status: res.status }
+      );
     }
-  } catch (error) {
-    console.warn("Using fallback mock data:", error);
+
+    const externalData = await res.json();
+
+    const products = (externalData.data || []).map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      metal: item.metal,
+      karat: item.karat,
+      price: parseFloat(item.price) || 0,
+      originalPrice: parseFloat(item.original_price) || undefined,
+      rating: item.average_rating || 0,
+      city: item.city || "",
+      images: Array.isArray(item.images)
+        ? item.images.map((img: string) => img.trim())
+        : [],
+    }));
+
+    const total = externalData.meta?.total || products.length;
+
+    return NextResponse.json({ products, total });
+  } catch (error: any) {
+    console.error("Products API route failed:", error.message || error);
+    return NextResponse.json({ products: [], total: 0 }, { status: 500 });
   }
-
-  // Fallback to mock data
-  const filteredProducts = mockProducts.filter((product) => {
-    if (metal && product.metal !== metal) return false;
-    if (karat && product.karat !== karat) return false;
-    if (type && product.category !== type) return false;
-    if (product.price < minPrice || product.price > maxPrice) return false;
-    if (city && product.city !== city) return false;
-    if (rating && product.rating < rating) return false;
-    return true;
-  });
-
-  const total = filteredProducts.length;
-
-  // Pagination
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-
-  return NextResponse.json({
-    products: paginatedProducts,
-    total,
-  });
 }

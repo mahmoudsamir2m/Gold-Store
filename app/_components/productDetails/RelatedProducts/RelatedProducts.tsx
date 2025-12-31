@@ -1,10 +1,21 @@
+// app/_components/productDetails/RelatedProducts/RelatedProducts.tsx
 "use client";
 
+import { useEffect, useState } from "react";
 import ReusableSliderSection, {
   SwiperSlide,
 } from "../../ReusableSlider/ReusableSlider";
 import Card from "../../card/Card";
-import { products } from "../../Home/ProductsSection/data";
+
+interface Product {
+  id: number;
+  title: string;
+  category: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  images: string[];
+}
 
 interface RelatedProductsProps {
   currentProductId: number;
@@ -15,12 +26,35 @@ export default function RelatedProducts({
   currentProductId,
   currentCategory,
 }: RelatedProductsProps) {
-  // تصفية المنتجات حسب نفس الفئة واستبعاد المنتج الحالي
-  const relatedProducts = products
-    .filter((p) => p.id !== currentProductId && p.category === currentCategory)
-    .slice(0, 8); // نعرض 8 منتجات فقط
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (relatedProducts.length === 0) return null;
+  useEffect(() => {
+    const fetchRelated = async () => {
+      try {
+        const res = await fetch(
+          `/api/products?category=${encodeURIComponent(
+            currentCategory
+          )}&per_page=8`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const filtered = (data.products || []).filter(
+            (p: Product) => p.id !== currentProductId
+          );
+          setRelatedProducts(filtered.slice(0, 8));
+        }
+      } catch (error) {
+        console.error("فشل جلب المنتجات المرتبطة:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (currentCategory) fetchRelated();
+  }, [currentProductId, currentCategory]);
+
+  if (loading || relatedProducts.length === 0) return null;
 
   return (
     <ReusableSliderSection title="منتجات ذات صلة" link="/all-products">

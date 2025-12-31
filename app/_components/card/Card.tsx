@@ -21,15 +21,20 @@ export default function Card({
     >
       {/* Product image */}
       <div className="relative w-full h-48 bg-gray-100">
-        <Image
-          src={images[0]}
-          alt={title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
+        {images && images.length > 0 && images[0] ? (
+          <Image
+            src={images[0]}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <span className="text-gray-500 text-sm">لا توجد صورة</span>
+          </div>
+        )}
       </div>
-
       {/* Content section */}
       <div className="p-4">
         {/* Product title */}
@@ -57,7 +62,7 @@ export default function Card({
         </div>
         {/* View Details Button */}
         <Link
-          href={`/productDetails/${id}`}
+          href={`/product/${id}`}
           className="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-sm"
         >
           عرض التفاصيل

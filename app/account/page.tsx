@@ -1,124 +1,222 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { useAuthStore } from "../stores/auth/auth.store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-// استيراد الأيقونات من React Icons
-import { FiEdit, FiTrash2, FiEye } from "react-icons/fi";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import {
+  profileSchema,
+  COUNTRIES,
+  COUNTRY_LABELS,
+  type Country,
+} from "./schema/profile.schema";
 
-// ================= Dummy Data =================
-const activeOrders = [
-  { id: "ORD-101", total: "25,000 EGP", status: "قيد التنفيذ" },
-  { id: "ORD-102", total: "12,500 EGP", status: "قيد الشحن" },
-];
-
-const completedOrders = [
-  { id: "ORD-090", total: "18,000 EGP", status: "تم التنفيذ" },
-];
-
-// نوع البيانات للمنتجات
 type SellingItem = {
   id: number;
-  name: string;
+  title: string;
   price: string;
-  status: string;
-  category: string;
-  type: string;
   metal: string;
+  category: string;
+  product_type: string;
   karat: string;
   description: string;
   country: string;
   city: string;
+  images: string[];
 };
-
-// تعديل نوع البيانات ليحتوي على كل الحقول المطلوبة للتعديل
-const sellingItems: SellingItem[] = [
-  {
-    id: 1,
-    name: "سبيكة ذهب 10 جرام",
-    price: "35,000",
-    status: "معروض",
-    category: "bullion",
-    type: "Bars",
-    metal: "gold",
-    karat: "24",
-    description: "سبيكة ذهب خالص عيار 24",
-    country: "مصر",
-    city: "القاهرة",
-  },
-  {
-    id: 2,
-    name: "جنيه ذهب",
-    price: "27,000",
-    status: "تم البيع",
-    category: "bullion",
-    type: "Coins",
-    metal: "gold",
-    karat: "22",
-    description: "جنيه ذهب استثماري",
-    country: "مصر",
-    city: "الجيزة",
-  },
-];
 
 export default function ProfilePage() {
   const router = useRouter();
+  const token = useAuthStore((state) => state.token);
+
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "Mahmoud Samir",
-    email: "mahmoud@email.com",
-    phone: "01000000000",
+    name: "",
+    email: "",
+    phone: "",
+    country: "egypt" as Country,
+    city: "",
   });
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [sellingItems, setSellingItems] = useState<SellingItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // دالة لحذف منتج
-  const handleDelete = (id: number) => {
-    if (confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) {
-      console.log("تم حذف المنتج برقم:", id);
-      // هنا تُضيف الكود للاتصال بـ API لحذف المنتج
+  // ===== جلب بيانات المستخدم =====
+  useEffect(() => {
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("/api/user/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "فشل تحميل البيانات");
+        }
+
+        const data = await res.json();
+
+        // تأكد أن country ضمن القيم المسموح بها
+        const apiCountry = (data.country?.toLowerCase() || "egypt") as string;
+        const validCountry = COUNTRIES.includes(apiCountry as any)
+          ? (apiCountry as Country)
+          : "egypt";
+
+        setProfile({
+          name: data.name || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          country: validCountry,
+          city: data.city || "",
+        });
+        setSellingItems(data.products || []);
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err.message || "خطأ في تحميل البيانات");
+        router.push("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [token, router]);
+
+  // ===== حفظ التعديلات =====
+  const handleSave = async () => {
+    // تنظيف رقم الهاتف: تحويل 0101234567 → 1012345678
+    const cleanPhone = profile.phone.replace(/\D/g, "");
+    let phone10 = cleanPhone;
+    if (cleanPhone.startsWith("0") && cleanPhone.length === 11) {
+      phone10 = cleanPhone.substring(1);
+    }
+
+    const dataToValidate = {
+      ...profile,
+      phone: phone10,
+      password: password.trim(),
+      passwordConfirmation: passwordConfirmation.trim(),
+    };
+
+    // ✅ التحقق باستخدام Zod
+    const result = profileSchema.safeParse(dataToValidate);
+    if (!result.success) {
+      const firstError = result.error.issues[0].message;
+      toast.error(firstError);
+      return;
+    }
+
+    const { name, email, phone, country, city, password: pwd } = result.data;
+
+    const formData = new FormData();
+    formData.append("name", name.trim());
+    formData.append("email", email.trim());
+    formData.append("phone", phone);
+    formData.append("country", country); // e.g., "egypt"
+    formData.append("city", city.trim());
+
+    if (pwd) {
+      formData.append("password", pwd);
+      formData.append("password_confirmation", passwordConfirmation.trim());
+    }
+
+    try {
+      const res = await fetch("/api/user/update", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        const errorMsg = result.message || result.error || "فشل التحديث";
+        toast.error(errorMsg);
+        console.error("Validation details:", result);
+        return;
+      }
+
+      toast.success("تم تحديث البيانات بنجاح");
+      setIsEditing(false);
+      setPassword("");
+      setPasswordConfirmation("");
+    } catch (err: any) {
+      console.error(err);
+      toast.error("حدث خطأ أثناء الحفظ");
     }
   };
 
-  // دالة لتعديل منتج → يُوجه إلى صفحة التعديل المنفصلة
-  const handleEdit = (product: any) => {
-    // تحويل السعر إلى رقم
-    const priceAsNumber = parseFloat(product.price.replace(/,/g, "")) || 0;
+const handleDelete = async (id: number) => {
+  if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) return;
 
+  try {
+    const res = await fetch(`/api/user/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const result = await res.json();
+      throw new Error(result.error || "فشل الحذف");
+    }
+
+    setSellingItems((prev) => prev.filter((item) => item.id !== id));
+    toast.success("تم حذف المنتج بنجاح");
+  } catch (err: any) {
+    console.error(err);
+    toast.error(err.message || "حدث خطأ أثناء الحذف");
+  }
+};
+
+  const handleEdit = (product: SellingItem) => {
     const productData = {
-      title: product.name,
+      title: product.title,
       category: product.category,
-      type: product.type,
+      type: product.product_type,
       metal: product.metal,
       karat: product.karat,
-      price: priceAsNumber,
+      price: parseFloat(product.price) || 0,
       description: product.description,
       country: product.country,
       city: product.city,
-      // الصور والبيانات الشخصية ستحتاج لجلبها من مكان آخر — هنا نضع قيم افتراضية
-      images: [],
+      images: product.images,
       name: profile.name,
       phone: profile.phone,
       email: profile.email,
     };
-    console.log("✅ البيانات المرسلة للتعديل:", productData);
     const encoded = encodeURIComponent(JSON.stringify(productData));
     router.push(`/edit-product?data=${encoded}`);
   };
 
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto p-8 text-center" dir="rtl">
+        جاري التحميل...
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-6" dir="rtl">
-      {/* ===== Profile Info ===== */}
+      {/* Profile Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-yellow-700">البيانات الشخصية</CardTitle>
           <Button
-            className="border-yellow-500 text-yellow-600 hover:bg-yellow-600 hover:text-white"
             variant="outline"
-            onClick={() => setIsEditing(!isEditing)}
+            className="border-yellow-500 text-yellow-600 hover:bg-yellow-600 hover:text-white"
+            onClick={isEditing ? handleSave : () => setIsEditing(true)}
           >
             {isEditing ? "حفظ" : "تعديل"}
           </Button>
@@ -134,7 +232,13 @@ export default function ProfilePage() {
           </div>
           <div className="space-y-2">
             <Label>البريد الإلكتروني</Label>
-            <Input disabled value={profile.email} />
+            <Input
+              disabled={!isEditing}
+              value={profile.email}
+              onChange={(e) =>
+                setProfile({ ...profile, email: e.target.value })
+              }
+            />
           </div>
           <div className="space-y-2">
             <Label>رقم الهاتف</Label>
@@ -144,12 +248,61 @@ export default function ProfilePage() {
               onChange={(e) =>
                 setProfile({ ...profile, phone: e.target.value })
               }
+              placeholder="مثال: 1012345678"
             />
           </div>
+          <div className="space-y-2">
+            <Label>الدولة</Label>
+            <select
+              disabled={!isEditing}
+              value={profile.country}
+              onChange={(e) =>
+                setProfile({ ...profile, country: e.target.value as Country })
+              }
+              className="w-full p-2 border rounded-md bg-white disabled:bg-gray-100"
+            >
+              {COUNTRIES.map((code) => (
+                <option key={code} value={code}>
+                  {COUNTRY_LABELS[code]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label>المدينة</Label>
+            <Input
+              disabled={!isEditing}
+              value={profile.city}
+              onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+            />
+          </div>
+
+          {isEditing && (
+            <>
+              <div className="space-y-2">
+                <Label>كلمة المرور (اختياري)</Label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="اتركه فارغًا إن لم ترد التغيير"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>تأكيد كلمة المرور</Label>
+                <Input
+                  type="password"
+                  value={passwordConfirmation}
+                  onChange={(e) => setPasswordConfirmation(e.target.value)}
+                  placeholder="أعد إدخال كلمة المرور"
+                />
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 
-      {/* ===== Selling Items ===== */}
+      {/* Selling Items */}
       <Card>
         <CardHeader>
           <CardTitle className="text-yellow-700">
@@ -168,13 +321,11 @@ export default function ProfilePage() {
                 className="flex items-center justify-between border rounded-lg p-3"
               >
                 <div className="flex-1">
-                  <p className="font-medium">{item.name}</p>
+                  <p className="font-medium">{item.title}</p>
                   <p className="text-sm text-muted-foreground">
                     {item.price} ج.م
                   </p>
                 </div>
-
-                {/* الأيقونات */}
                 <div className="flex gap-2">
                   <Button
                     variant="ghost"
