@@ -6,35 +6,10 @@ import CategoriesSection from "./_components/Home/CategoriesSection/CategoriesSe
 import HeroSection from "./_components/Home/HeroSection/HeroSection";
 import ProductsSection from "./_components/Home/ProductsSection/ProductsSection";
 
-// ✅ عرّف دالة جلب الأسعار هنا (أو استوردها من ملف منفصل)
-async function fetchMetalPrices() {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/metalsPrices`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) throw new Error("فشل جلب الأسعار");
-    const data = await res.json();
-
-    // تأكد أن البيانات صحيحة
-    if (typeof data.gold === "number" && typeof data.silver === "number") {
-      return data;
-    } else {
-      throw new Error("بيانات غير صالحة");
-    }
-  } catch (error) {
-    console.warn("استخدام أسعار افتراضية:", error);
-    return { gold: 2000, silver: 25 };
-  }
-}
-
-export default async function Home() {
-  const prices = await fetchMetalPrices(); // ✅ الآن معرّفة
-
+export default function Home() {
   return (
     <main>
-      <PricesTicker prices={prices} />
+      <PricesTicker />
       <HeroSection />
       <ProductsSection />
       <AboutSection

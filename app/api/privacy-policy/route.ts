@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const res = await fetch("https://gold-stats.com/api/privacy", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/privacy`, {
       cache: "no-store",
     });
 

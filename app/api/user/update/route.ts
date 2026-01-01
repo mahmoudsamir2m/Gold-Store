@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
 
-    const res = await fetch("https://gold-stats.com/api/update-profile", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/update-profile`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

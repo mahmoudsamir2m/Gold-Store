@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const res = await fetch("https://gold-stats.com/api/upload", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
       method: "POST",
       body: formData,
       headers: {

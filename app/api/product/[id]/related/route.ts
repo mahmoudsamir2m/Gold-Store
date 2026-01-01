@@ -12,7 +12,7 @@ export async function GET(
   try {
     // جلب منتجات من نفس الفئة (عدا المنتج الحالي)
     const res = await fetch(
-      `https://gold-stats.com/api/products?page=1&per_page=8&category=${encodeURIComponent(
+      `${process.env.NEXT_PUBLIC_API_URL}/products?page=1&per_page=8&category=${encodeURIComponent(
         category
       )}`,
       {

@@ -9,7 +9,7 @@ export async function GET(
 
   try {
     const res = await fetch(
-      `https://gold-stats.com/api/products/${productId}/reviews/stats`,
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/reviews/stats`,
       {
         cache: "no-store",
       }

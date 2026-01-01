@@ -4,6 +4,12 @@ import Image from "next/image";
 import { ProductCardProps } from "./types/ProductCardProps";
 import Link from "next/link";
 
+const CURRENCY_MAP: Record<string, string> = {
+  egypt: 'ج.م',
+  saudi: 'ر.س',
+  uae: 'د.إ',
+};
+
 export default function Card({
   id,
   images,
@@ -12,7 +18,10 @@ export default function Card({
   price,
   originalPrice,
   width,
+  label,
+  country,
 }: ProductCardProps) {
+  const currency = country ? CURRENCY_MAP[country] || '$' : '$';
 
   return (
     <div
@@ -21,6 +30,11 @@ export default function Card({
     >
       {/* Product image */}
       <div className="relative w-full h-48 bg-gray-100">
+        {label && (
+          <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg z-10">
+            {label}
+          </div>
+        )}
         {images && images.length > 0 && images[0] ? (
           <Image
             src={images[0]}
@@ -51,11 +65,11 @@ export default function Card({
         {/* Price section with cart icon */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">${price}</span>
+            <span className="text-xl font-bold text-gray-900">{price} {currency}</span>
             {/* Original price */}
             {originalPrice && (
               <span className="text-sm text-gray-500 line-through">
-                ${originalPrice}
+                {originalPrice} {currency}
               </span>
             )}
           </div>

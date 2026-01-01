@@ -124,9 +124,18 @@ function EditProductForm() {
         const data = JSON.parse(
           decodeURIComponent(editParam)
         ) as Partial<ProductFormData>;
+        
+        // Convert country from english to arabic
+        let countryArabic = 'مصر';
+        if (data.country === 'saudi' || data.country === 'السعودية') countryArabic = 'السعودية';
+        else if (data.country === 'uae' || data.country === 'الإمارات') countryArabic = 'الإمارات';
+        else if (data.country === 'egypt') countryArabic = 'مصر';
+        
         setFormValues((prev) => ({
           ...prev,
           ...data,
+          country: countryArabic,
+          city: data.city || 'القاهرة',
           images: [], // لا نستخدم الصور القديمة
         }));
       } catch (e) {

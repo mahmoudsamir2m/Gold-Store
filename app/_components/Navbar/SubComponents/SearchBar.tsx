@@ -1,16 +1,22 @@
+"use client";
+
 import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SearchBar({ isMobile }: { isMobile: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [query, setQuery] = useState("");
+  const router = useRouter();
 
   const toggleSearch = () => setIsExpanded(!isExpanded);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      console.log("بحث عن:", query);
+      router.push(`/products?search=${encodeURIComponent(query.trim())}`);
+      setIsExpanded(false);
+      setQuery("");
     }
   };
 

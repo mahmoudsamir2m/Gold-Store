@@ -223,25 +223,33 @@ export default function ProductsSidebar({
           <span>{openSections.price ? "−" : "+"}</span>
         </button>
         {openSections.price && (
-          <div className="flex gap-2">
-            <input
-              type="number"
-              placeholder="من"
-              className="w-1/2 border px-2 h-8 rounded"
-              value={filters.minPrice}
-              onChange={(e) =>
-                onFilterChange({ ...filters, minPrice: +e.target.value || 0 })
-              }
-            />
-            <input
-              type="number"
-              placeholder="إلى"
-              className="w-1/2 border px-2 h-8 rounded"
-              value={filters.maxPrice}
-              onChange={(e) =>
-                onFilterChange({ ...filters, maxPrice: +e.target.value || 0 })
-              }
-            />
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="number"
+                placeholder="من"
+                className="w-1/2 border px-2 h-8 rounded"
+                value={filters.minPrice || ''}
+                onChange={(e) =>
+                  onFilterChange({ ...filters, minPrice: +e.target.value || 0 })
+                }
+              />
+              <input
+                type="number"
+                placeholder="إلى"
+                className="w-1/2 border px-2 h-8 rounded"
+                value={filters.maxPrice || ''}
+                onChange={(e) =>
+                  onFilterChange({ ...filters, maxPrice: +e.target.value || 0 })
+                }
+              />
+            </div>
+            <button
+              onClick={() => onFilterChange({ ...filters, minPrice: 0, maxPrice: 0 })}
+              className="text-xs text-gray-500 hover:text-gray-700"
+            >
+              إعادة تعيين
+            </button>
           </div>
         )}
       </div>

@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
 
-    const res = await fetch("https://gold-stats.com/api/products", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
       method: "POST",
       body: formData,
       headers: {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const res = await fetch("https://gold-stats.com/api/app-content/1", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/app-content/1`, {
       cache: "no-store",
     });
 
@@ -13,7 +13,7 @@ export async function GET() {
     const data = await res.json();
 
     const videoPath = data?.data?.value?.trim();
-    const videoUrl = videoPath ? `https://gold-stats.com/${videoPath}` : null;
+    const videoUrl = videoPath ? `http://127.0.0.1:8000/${videoPath}` : null;
 
     return NextResponse.json({
       success: true,

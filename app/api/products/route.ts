@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   const max_price_raw = searchParams.get("max_price");
 
   try {
-    const PRODUCTS_API_URL = "https://gold-stats.com/api/products";
+    const PRODUCTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
     const apiUrl = new URL(PRODUCTS_API_URL);
     apiUrl.searchParams.set("page", page.toString());

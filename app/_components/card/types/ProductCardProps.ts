@@ -6,4 +6,6 @@ export interface ProductCardProps {
   price: number;
   originalPrice?: number;
   width: string;
+  label?: string;
+  country?: string;
 }

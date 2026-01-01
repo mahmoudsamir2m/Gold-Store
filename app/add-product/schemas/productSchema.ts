@@ -63,21 +63,21 @@ export const productFormSchema = z
   .refine(
     (data) => {
       const { phone, country } = data;
-      const cleanedPhone = phone.trim();
+      const cleanedPhone = phone.replace(/\D/g, '');
 
       if (country === "مصر") {
         return /^01[0125][0-9]{8}$/.test(cleanedPhone);
       }
       if (country === "السعودية") {
-        return /^05[0-9]{8}$/.test(cleanedPhone);
+        return /^(05|5)[0-9]{8}$/.test(cleanedPhone);
       }
       if (country === "الإمارات") {
-        return /^05[0-9]{7,8}$/.test(cleanedPhone);
+        return /^(05|5)[0-9]{7,8}$/.test(cleanedPhone);
       }
-      return false;
+      return true;
     },
     {
-      message: "رقم الهاتف غير صحيح للدولة المختارة",
+      message: "رقم الهاتف غير صحيح. مصر: 01xxxxxxxxx، السعودية: 05xxxxxxxx، الإمارات: 05xxxxxxx",
       path: ["phone"],
     }
   );

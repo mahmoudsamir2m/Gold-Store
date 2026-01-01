@@ -14,10 +14,10 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, phone: string, country: string) => Promise<void>;
   logout: () => void;
   resetPassword: (email: string) => Promise<void>;
-  updateUser: (updates: Partial<User>) => void; // مطلوب
+  updateUser: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -52,14 +52,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name: email.split("@")[0],
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'فشل تسجيل الدخول');
+      }
+
+      const userData: User = {
+        id: data.data.user.id,
+        email: data.data.user.email,
+        name: data.data.user.name,
+        avatar: data.data.user.avatar,
       };
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      setUser(mockUser);
+
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('auth-storage', JSON.stringify({ state: { token: data.data.token, user: userData, isAuthenticated: true }, version: 0 }));
+      setUser(userData);
     } finally {
       setIsLoading(false);
     }
@@ -83,24 +98,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (email: string, password: string, name: string, phone: string, country: string) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name,
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, password_confirmation: password, name, phone, country }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'فشل التسجيل');
+      }
+
+      const userData: User = {
+        id: data.data.user.id,
+        email: data.data.user.email,
+        name: data.data.user.name,
+        avatar: data.data.user.avatar,
       };
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      setUser(mockUser);
+
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('auth-storage', JSON.stringify({ state: { token: data.data.token, user: userData, isAuthenticated: true }, version: 0 }));
+      setUser(userData);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
+  const logout = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('auth-storage');
     setUser(null);
   };
 

@@ -14,7 +14,7 @@ export async function DELETE(
 
   try {
     const res = await fetch(
-      `https://gold-stats.com/api/products/${productId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
       {
         method: "DELETE",
         headers: {

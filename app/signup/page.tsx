@@ -20,6 +20,8 @@ const signupSchema = z
   .object({
     name: z.string().min(2, "الاسم يجب أن يكون على الأقل حرفين"),
     email: z.string().email("الرجاء إدخال بريد إلكتروني صحيح"),
+    phone: z.string().min(10, "رقم الهاتف غير صحيح"),
+    country: z.string().min(1, "الرجاء اختيار الدولة"),
     password: z.string().min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
     confirmPassword: z.string(),
   })
@@ -46,7 +48,7 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormData) => {
     try {
-      await signup(data.email, data.password, data.name);
+      await signup(data.email, data.password, data.name, data.phone, data.country);
       toast(
         <div className="text-right">
           <strong>تم إنشاء الحساب</strong>
@@ -54,11 +56,11 @@ export default function SignupPage() {
         </div>
       );
       router.push("/");
-    } catch (err) {
-      toast(
+    } catch (err: any) {
+      toast.error(
         <div className="text-right">
           <strong>فشل التسجيل</strong>
-          <p>لم نتمكن من إنشاء الحساب. حاول مرة أخرى.</p>
+          <p>{err.message || 'لم نتمكن من إنشاء الحساب. حاول مرة أخرى.'}</p>
         </div>
       );
     }
@@ -140,6 +142,47 @@ export default function SignupPage() {
               <p className="text-red-500 text-sm mt-1">
                 {errors.email.message}
               </p>
+            )}
+          </div>
+
+          {/* رقم الهاتف */}
+          <div>
+            <Label htmlFor="phone" className="text-gray-700 font-medium">
+              رقم الهاتف
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="أدخل رقم هاتفك"
+              className={`mt-1.5 h-12 bg-gray-50 border-gray-200 focus:border-amber-500 focus:ring-amber-500 ${
+                errors.phone ? "border-red-500" : ""
+              }`}
+              {...register("phone")}
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+            )}
+          </div>
+
+          {/* الدولة */}
+          <div>
+            <Label htmlFor="country" className="text-gray-700 font-medium">
+              الدولة
+            </Label>
+            <select
+              id="country"
+              className={`mt-1.5 h-12 w-full bg-gray-50 border border-gray-200 rounded-md px-3 focus:border-amber-500 focus:ring-amber-500 ${
+                errors.country ? "border-red-500" : ""
+              }`}
+              {...register("country")}
+            >
+              <option value="">اختر الدولة</option>
+              <option value="saudi">السعودية</option>
+              <option value="uae">الإمارات</option>
+              <option value="egypt">مصر</option>
+            </select>
+            {errors.country && (
+              <p className="text-red-500 text-sm mt-1">{errors.country.message}</p>
             )}
           </div>
 

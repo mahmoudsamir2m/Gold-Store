@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const res = await fetch("https://gold-stats.com/api/me", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

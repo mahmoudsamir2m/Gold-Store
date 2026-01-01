@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import LayoutWrapper from "./_components/LayoutWrapper/LayoutWrapper";
 import { Tajawal } from "next/font/google";
+import { CountryProvider } from "@/contexts/CountryContext";
 
 const tajawal = Tajawal({
   subsets: ["arabic"],
@@ -38,10 +39,12 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={tajawal.className}>
-        <ReactQueryProvider>
-          <LayoutWrapper>{children}</LayoutWrapper>
-          <Toaster richColors />
-        </ReactQueryProvider>
+        <CountryProvider>
+          <ReactQueryProvider>
+            <LayoutWrapper>{children}</LayoutWrapper>
+            <Toaster richColors />
+          </ReactQueryProvider>
+        </CountryProvider>
       </body>
     </html>
   );

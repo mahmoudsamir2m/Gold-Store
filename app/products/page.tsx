@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Card from "../_components/card/Card";
 import ProductsSidebar from "../_components/products/productsSidebar";
 import { FaFilter } from "react-icons/fa";
+import { useCountry } from "@/contexts/CountryContext";
+import { useSearchParams } from "next/navigation";
 
 interface FilterState {
   metal: "" | "gold" | "silver";
@@ -13,6 +15,7 @@ interface FilterState {
   maxPrice: number;
   city: string;
   rating: number;
+  search: string;
 }
 
 interface Product {
@@ -23,11 +26,15 @@ interface Product {
   originalPrice?: number;
   rating: number;
   images: string[];
+  label?: string;
+  country?: string;
 }
 
 const ITEMS_PER_PAGE = 8;
 
 export default function ProductsPage() {
+  const { selectedCountry } = useCountry();
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +48,15 @@ export default function ProductsPage() {
     maxPrice: 5000,
     city: "",
     rating: 0,
+    search: "",
   });
+
+  useEffect(() => {
+    const searchQuery = searchParams.get('search');
+    if (searchQuery) {
+      setFilters(prev => ({ ...prev, search: searchQuery }));
+    }
+  }, [searchParams]);
 
   /* ================== API CALL ================== */
   useEffect(() => {
@@ -50,15 +65,20 @@ export default function ProductsPage() {
 
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: ITEMS_PER_PAGE.toString(),
-        metal: filters.metal,
-        karat: filters.karat,
-        type: filters.type,
-        minPrice: filters.minPrice.toString(),
-        maxPrice: filters.maxPrice.toString(),
-        city: filters.city,
-        rating: filters.rating.toString(),
+        per_page: ITEMS_PER_PAGE.toString(),
       });
+
+      if (filters.metal) params.set('metal', filters.metal);
+      if (filters.karat) params.set('karat', filters.karat);
+      if (filters.type) params.set('product_type', filters.type);
+      if (filters.minPrice > 0) params.set('min_price', filters.minPrice.toString());
+      if (filters.maxPrice > 0) params.set('max_price', filters.maxPrice.toString());
+      if (filters.city) params.set('city', filters.city);
+      if (filters.search) params.set('search', filters.search);
+
+      if (selectedCountry !== 'all') {
+        params.set('country', selectedCountry);
+      }
 
       // ❌ لا حاجة للـ headers أو التوكِن
       const res = await fetch(`/api/products?${params.toString()}`, {
@@ -73,7 +93,7 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, [filters, currentPage]);
+  }, [filters, currentPage, selectedCountry]);
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
@@ -92,6 +112,18 @@ export default function ProductsPage() {
         </div>
 
         <div className="flex-1">
+          {filters.search && (
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <span className="text-sm">نتائج البحث عن: </span>
+              <span className="font-bold">"{filters.search}"</span>
+              <button 
+                onClick={() => setFilters(prev => ({ ...prev, search: "" }))}
+                className="mr-2 text-xs text-red-600 hover:underline"
+              >
+                إلغاء
+              </button>
+            </div>
+          )}
           {loading ? (
             <p className="text-center py-10">جاري التحميل...</p>
           ) : products.length === 0 ? (

@@ -11,7 +11,7 @@ export async function GET(
 
   try {
     const res = await fetch(
-      `https://gold-stats.com/api/products/${productId}/reviews?page=${page}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/reviews?page=${page}`,
       {
         cache: "no-store",
       }
@@ -49,7 +49,7 @@ export async function POST(
   try {
     const body = await request.json();
     const res = await fetch(
-      `https://gold-stats.com/api/products/${productId}/reviews`,
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/reviews`,
       {
         method: "POST",
         headers: {

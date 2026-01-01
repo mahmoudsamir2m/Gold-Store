@@ -95,6 +95,7 @@ export default function AddProductPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const {
     register,
@@ -105,6 +106,39 @@ export default function AddProductPage() {
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
   });
+
+  // Fetch user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('يجب تسجيل الدخول أولاً');
+        router.push('/login');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/user/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setValue('name', data.name || '');
+          setValue('phone', data.phone || '');
+          setValue('email', data.email || '');
+          setValue('country', data.country === 'egypt' ? 'مصر' : data.country === 'saudi' ? 'السعودية' : 'الإمارات');
+          setValue('city', data.city || '');
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [router, setValue]);
 
   const selectedCategory = watch("category");
   const selectedMetal = watch("metal");
@@ -137,13 +171,93 @@ export default function AddProductPage() {
   };
 
   const onSubmit = async (data: ProductFormData) => {
-    console.log("تم حفظ المنتج:", data);
-    previewImages.forEach(URL.revokeObjectURL);
-    router.push("/profile");
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('يجب تسجيل الدخول أولاً');
+        router.push('/login');
+        return;
+      }
+
+      // Update user profile if contact info changed
+      const updateRes = await fetch('/api/user/update', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: (() => {
+          const formData = new FormData();
+          formData.append('name', data.name);
+          formData.append('phone', data.phone);
+          formData.append('email', data.email);
+          formData.append('country', data.country === 'مصر' ? 'egypt' : data.country === 'السعودية' ? 'saudi' : 'uae');
+          formData.append('city', data.city);
+          return formData;
+        })(),
+      });
+
+      // Upload images
+      const uploadedPaths: string[] = [];
+      for (const file of data.images) {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData,
+        });
+        
+        const uploadData = await uploadRes.json();
+        if (uploadData.data?.path) {
+          uploadedPaths.push(uploadData.data.path);
+        }
+      }
+
+      // Create product
+      const productData = {
+        title: data.title,
+        metal: data.metal,
+        category: data.category,
+        product_type: data.type,
+        karat: data.karat,
+        price: data.price,
+        description: data.description,
+        contact_name: data.name,
+        contact_phone: data.phone,
+        contact_email: data.email,
+        country: data.country === 'مصر' ? 'egypt' : data.country === 'السعودية' ? 'saudi' : 'uae',
+        city: data.city,
+        images: uploadedPaths,
+      };
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(productData),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || 'فشل إضافة المنتج');
+      }
+
+      alert('تم إضافة المنتج بنجاح! في انتظار موافقة الإدارة');
+      previewImages.forEach(URL.revokeObjectURL);
+      router.push('/account');
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message || 'حدث خطأ أثناء إضافة المنتج');
+    }
   };
 
   return (
     <div dir="rtl" className="max-w-2xl mx-auto p-4 md:p-6 my-10">
+      {loading ? (
+        <div className="text-center py-10">جاري التحميل...</div>
+      ) : (
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-center text-yellow-600">
@@ -398,6 +512,7 @@ export default function AddProductPage() {
           </form>
         </CardContent>
       </Card>
+      )}
     </div>
   );
 }

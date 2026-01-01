@@ -8,7 +8,7 @@ export async function GET(request: Request) {
       return NextResponse.json({}, { status: 401 });
     }
 
-    const res = await fetch("https://gold-stats.com/api/profile", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile`, {
       headers: {
         Authorization: authHeader,
       },

@@ -32,7 +32,6 @@ type SellingItem = {
 
 export default function ProfilePage() {
   const router = useRouter();
-  const token = useAuthStore((state) => state.token);
 
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
@@ -49,11 +48,18 @@ export default function ProfilePage() {
 
   // ===== جلب بيانات المستخدم =====
   useEffect(() => {
-
     const fetchProfile = async () => {
+      const storedToken = localStorage.getItem('token');
+      
+      if (!storedToken) {
+        toast.error('يجب تسجيل الدخول أولاً');
+        router.push('/login');
+        return;
+      }
+
       try {
         const res = await fetch("/api/user/me", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${storedToken}` },
         });
 
         if (!res.ok) {
@@ -87,10 +93,17 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [token, router]);
+  }, [router]);
 
   // ===== حفظ التعديلات =====
   const handleSave = async () => {
+    const storedToken = localStorage.getItem('token');
+    if (!storedToken) {
+      toast.error('يجب تسجيل الدخول أولاً');
+      router.push('/login');
+      return;
+    }
+
     // تنظيف رقم الهاتف: تحويل 0101234567 → 1012345678
     const cleanPhone = profile.phone.replace(/\D/g, "");
     let phone10 = cleanPhone;
@@ -131,7 +144,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/user/update", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedToken}`,
         },
         body: formData,
       });
@@ -158,11 +171,17 @@ export default function ProfilePage() {
 const handleDelete = async (id: number) => {
   if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) return;
 
+  const storedToken = localStorage.getItem('token');
+  if (!storedToken) {
+    toast.error('يجب تسجيل الدخول أولاً');
+    return;
+  }
+
   try {
     const res = await fetch(`/api/user/products/${id}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${storedToken}`,
       },
     });
 

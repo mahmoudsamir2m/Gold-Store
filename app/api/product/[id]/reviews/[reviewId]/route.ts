@@ -15,7 +15,7 @@ export async function PUT(
   try {
     const body = await request.json();
     const res = await fetch(
-      `https://gold-stats.com/api/products/${productId}/reviews/${reviewId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/reviews/${reviewId}`,
       {
         method: "POST",
         headers: {
@@ -58,7 +58,7 @@ export async function DELETE(
 
   try {
     const res = await fetch(
-      `https://gold-stats.com/api/products/${productId}/reviews/${reviewId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/reviews/${reviewId}`,
       {
         method: "DELETE",
         headers: {
