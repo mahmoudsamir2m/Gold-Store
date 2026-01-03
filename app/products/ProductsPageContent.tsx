@@ -28,6 +28,7 @@ interface Product {
   images: string[];
   label?: string;
   country?: string;
+  weight?: number;
 }
 
 const ITEMS_PER_PAGE = 8;

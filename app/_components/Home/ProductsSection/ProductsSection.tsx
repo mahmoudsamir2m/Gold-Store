@@ -14,6 +14,7 @@ type Product = {
   rating: number;
   price: number;
   originalPrice?: number;
+  weight?: number;
 };
 
 export default function ProductsSection() {
@@ -59,6 +60,7 @@ export default function ProductsSection() {
                 price={product.price}
                 originalPrice={product.originalPrice}
                 width="w-82"
+                weight={product.weight}
               />
             </SwiperSlide>
           ))}

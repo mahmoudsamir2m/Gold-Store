@@ -3,11 +3,12 @@
 import Image from "next/image";
 import { ProductCardProps } from "./types/ProductCardProps";
 import Link from "next/link";
+import { ImageOff } from "lucide-react";
 
 const CURRENCY_MAP: Record<string, string> = {
-  egypt: 'ج.م',
-  saudi: 'ر.س',
-  uae: 'د.إ',
+  egypt: "ج.م",
+  saudi: "ر.س",
+  uae: "د.إ",
 };
 
 export default function Card({
@@ -20,8 +21,9 @@ export default function Card({
   width,
   label,
   country,
+  weight,
 }: ProductCardProps) {
-  const currency = country ? CURRENCY_MAP[country] || '$' : '$';
+  const currency = country ? CURRENCY_MAP[country] || "$" : "$";
 
   return (
     <div
@@ -44,7 +46,8 @@ export default function Card({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
+            <ImageOff className="w-12 h-12 text-gray-400 mb-2" />
             <span className="text-gray-500 text-sm">لا توجد صورة</span>
           </div>
         )}
@@ -65,7 +68,9 @@ export default function Card({
         {/* Price section with cart icon */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">{price} {currency}</span>
+            <span className="text-xl font-bold text-gray-900">
+              {price} {currency}
+            </span>
             {/* Original price */}
             {originalPrice && (
               <span className="text-sm text-gray-500 line-through">
@@ -74,6 +79,14 @@ export default function Card({
             )}
           </div>
         </div>
+
+        {/* Weight */}
+        {weight && (
+          <div className="mb-3">
+            <span className="text-sm text-gray-600">الوزن: {weight} جرام</span>
+          </div>
+        )}
+
         {/* View Details Button */}
         <Link
           href={`/product/${id}`}

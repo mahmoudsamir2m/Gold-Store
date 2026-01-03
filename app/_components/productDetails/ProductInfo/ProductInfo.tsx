@@ -46,6 +46,10 @@ export default function ProductInfo({ product }: { product: Product }) {
           </p>
         </div>
         <div>
+          <h3 className="font-semibold">الوزن</h3>
+          <p className="text-sm text-gray-700">{product.weight} جرام</p>
+        </div>
+        <div>
           <h3 className="font-semibold">الشحن</h3>
           <p className="text-sm text-gray-700">توصيل سريع خلال 3-5 أيام عمل.</p>
         </div>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaCalendar, FaUser } from "react-icons/fa";
+import { ImageOff } from "lucide-react";
 
 interface GoldCardProps {
   imageSrc: string;
@@ -30,12 +31,19 @@ export default function GoldCard({
         flex flex-col gap-3 h-65 md:h-60"
       >
         <div className="relative w-full h-32 rounded-lg overflow-hidden">
-          <Image
-            src={imageSrc}
-            alt={title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
+              <ImageOff className="w-8 h-8 text-gray-400 mb-1" />
+              <span className="text-gray-500 text-xs">لا توجد صورة</span>
+            </div>
+          )}
         </div>
         <div className="flex-1 text-right flex flex-col justify-between">
           <div>

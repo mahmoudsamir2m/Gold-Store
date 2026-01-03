@@ -5,9 +5,22 @@ import { Thumbs, Autoplay } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper/types";
 import Image from "next/image";
 import { useState } from "react";
+import { ImageOff } from "lucide-react";
 
 export default function ProductImagesSlider({ images }: { images: string[] }) {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+
+  // Filter out empty or invalid images
+  const validImages = images.filter((img) => img && img.trim() !== "");
+
+  if (validImages.length === 0) {
+    return (
+      <div className="w-full h-96 flex flex-col items-center justify-center bg-gray-200 rounded-lg">
+        <ImageOff className="w-16 h-16 text-gray-400 mb-4" />
+        <span className="text-gray-500 text-lg">لا توجد صور للمنتج</span>
+      </div>
+    );
+  }
 
   return (
     <div dir="rtl" className="w-full">
@@ -16,13 +29,13 @@ export default function ProductImagesSlider({ images }: { images: string[] }) {
         modules={[Thumbs, Autoplay]}
         thumbs={{ swiper: thumbsSwiper }}
         autoplay={{
-          delay: 3000, 
-          disableOnInteraction: false, 
+          delay: 3000,
+          disableOnInteraction: false,
         }}
-        loop={true} 
+        loop={true}
         className="rounded-lg overflow-hidden bg-white shadow-md"
       >
-        {images.map((img, i) => (
+        {validImages.map((img, i) => (
           <SwiperSlide key={i}>
             <Image
               src={img}
@@ -44,7 +57,7 @@ export default function ProductImagesSlider({ images }: { images: string[] }) {
         watchSlidesProgress
         className="mt-4"
       >
-        {images.map((img, i) => (
+        {validImages.map((img, i) => (
           <SwiperSlide key={i}>
             <Image
               src={img}

@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
         hostname: "your-backend-domain.com",
         pathname: "/storage/**",
       },
+      {
+        protocol: "https",
+        hostname: "gold-stats.com",
+        pathname: "/storage/**",
+      },
     ],
   },
 };
