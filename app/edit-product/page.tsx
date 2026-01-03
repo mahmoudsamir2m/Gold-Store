@@ -8,6 +8,7 @@ import { productFormSchema } from "../add-product/schemas/productSchema";
 import type {
   ProductFormData,
   MetalType,
+  CountryType,
 } from "../add-product/types/ProductFormTypes";
 import {
   FiTag,
@@ -124,18 +125,21 @@ function EditProductForm() {
         const data = JSON.parse(
           decodeURIComponent(editParam)
         ) as Partial<ProductFormData>;
-        
+
         // Convert country from english to arabic
-        let countryArabic = 'مصر';
-        if (data.country === 'saudi' || data.country === 'السعودية') countryArabic = 'السعودية';
-        else if (data.country === 'uae' || data.country === 'الإمارات') countryArabic = 'الإمارات';
-        else if (data.country === 'egypt') countryArabic = 'مصر';
-        
+        let countryArabic = "مصر";
+        const countryStr = data.country as string | undefined;
+        if (countryStr === "saudi" || countryStr === "السعودية")
+          countryArabic = "السعودية";
+        else if (countryStr === "uae" || countryStr === "الإمارات")
+          countryArabic = "الإمارات";
+        else if (countryStr === "egypt") countryArabic = "مصر";
+
         setFormValues((prev) => ({
           ...prev,
           ...data,
-          country: countryArabic,
-          city: data.city || 'القاهرة',
+          country: countryArabic as CountryType,
+          city: data.city || "القاهرة",
           images: [], // لا نستخدم الصور القديمة
         }));
       } catch (e) {
