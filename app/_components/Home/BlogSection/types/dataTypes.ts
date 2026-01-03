@@ -10,6 +10,8 @@ export interface BlogItem {
   title: string;
   description: string;
   date: string;
+  author?: string;
+  href?: string;
   content: BlogContentItem[];
 }
 

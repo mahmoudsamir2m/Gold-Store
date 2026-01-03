@@ -144,7 +144,11 @@ function EditProductForm() {
 
         // Store existing images for display and fallback
         if (data.images && Array.isArray(data.images)) {
-          setExistingImages(data.images);
+          setExistingImages(
+            (data.images as unknown[]).filter(
+              (img): img is string => typeof img === "string"
+            )
+          );
         }
 
         setFormValues((prev) => ({
