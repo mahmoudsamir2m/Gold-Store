@@ -2,15 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FaCalendar, FaUser } from "react-icons/fa";
-import { ImageOff } from "lucide-react";
+import { FaCalendar } from "react-icons/fa";
+import { BookOpen, ImageOff } from "lucide-react";
 
 interface GoldCardProps {
   imageSrc: string;
   title: string;
   description: string;
   date: string;
-  author: string;
   slug: string;
 }
 
@@ -19,7 +18,6 @@ export default function GoldCard({
   title,
   description,
   date,
-  author,
   slug,
 }: GoldCardProps) {
   return (
@@ -33,7 +31,7 @@ export default function GoldCard({
         <div className="relative w-full h-32 rounded-lg overflow-hidden">
           {imageSrc ? (
             <Image
-              src={imageSrc}
+              src={`https://gold-stats.com/api/${imageSrc}`}
               alt={title}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -52,11 +50,7 @@ export default function GoldCard({
             </h3>
             <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
           </div>
-          <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
-            <span className="flex items-center gap-1">
-              <FaUser className="w-4 h-4" />
-              {author}
-            </span>
+          <div className="flex items-center justify-end text-xs text-gray-500 mt-2">
             <span className="flex items-center gap-1">
               <FaCalendar className="w-4 h-4" />
               {date}

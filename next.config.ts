@@ -30,6 +30,21 @@ const nextConfig: NextConfig = {
         hostname: "gold-stats.com",
         pathname: "/storage/**",
       },
+      {
+        protocol: "https",
+        hostname: "gold-stats.com",
+        pathname: "/api/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gold-stats.com",
+        pathname: "/images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "gold-stats.com",
+        pathname: "/uploads/**",
+      },
     ],
   },
 };

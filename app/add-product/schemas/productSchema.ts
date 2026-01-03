@@ -28,16 +28,34 @@ const fileSchema = z
 // الدول المدعومة
 const SUPPORTED_COUNTRIES = ["مصر", "السعودية", "الإمارات"] as const;
 
-export const productFormSchema = z
+export const productFormSchema = z.object({
+  title: z.string().min(1, "العنوان مطلوب"),
+  category: z.enum(allowedCategories, { message: "الفئة غير صالحة" }),
+  type: z.enum(allowedTypes, { message: "النوع غير صالح" }),
+  metal: z.enum(["gold", "silver"], { message: "المعدن غير صالح" }),
+  karat: z.string().min(1, "العيار مطلوب"),
+  price: z.number().positive("السعر يجب أن يكون أكبر من 0"),
+  weight: z.number().positive("الوزن يجب أن يكون أكبر من 0"),
+  description: z.string().min(10, "الوصف قصير جدًا"),
+  images: z.array(fileSchema).min(1, "يجب اختيار صورة واحدة على الأقل"),
+  name: z.string().min(1, "الاسم مطلوب"),
+  phone: z.string().min(1, "رقم الهاتف مطلوب"),
+  email: z.string().email("البريد الإلكتروني غير صحيح"),
+  country: z.enum(SUPPORTED_COUNTRIES, { message: "الدولة غير مدعومة" }),
+  city: z.string().min(1, "المدينة مطلوبة"),
+});
+
+export const editProductFormSchema = z
   .object({
     title: z.string().min(1, "العنوان مطلوب"),
     category: z.enum(allowedCategories, { message: "الفئة غير صالحة" }),
     type: z.enum(allowedTypes, { message: "النوع غير صالح" }),
-    metal: z.enum(["gold", "silver"]),
+    metal: z.enum(["gold", "silver"], { message: "المعدن غير صالح" }),
     karat: z.string().min(1, "العيار مطلوب"),
     price: z.number().positive("السعر يجب أن يكون أكبر من 0"),
+    weight: z.number().positive("الوزن يجب أن يكون أكبر من 0"),
     description: z.string().min(10, "الوصف قصير جدًا"),
-    images: z.array(fileSchema).min(1, "يجب رفع صورة واحدة على الأقل"),
+    images: z.array(fileSchema).min(0), // Allow 0 images for editing
     name: z.string().min(1, "الاسم مطلوب"),
     phone: z.string().min(1, "رقم الهاتف مطلوب"),
     email: z.string().email("البريد الإلكتروني غير صحيح"),
@@ -48,9 +66,11 @@ export const productFormSchema = z
   .refine(
     (data) => {
       if (data.metal === "gold") {
-        return goldKarats.includes(data.karat as any);
+        return goldKarats.includes(data.karat as (typeof goldKarats)[number]);
       } else if (data.metal === "silver") {
-        return silverKarats.includes(data.karat as any);
+        return silverKarats.includes(
+          data.karat as (typeof silverKarats)[number]
+        );
       }
       return false;
     },
@@ -63,7 +83,7 @@ export const productFormSchema = z
   .refine(
     (data) => {
       const { phone, country } = data;
-      const cleanedPhone = phone.replace(/\D/g, '');
+      const cleanedPhone = phone.replace(/\D/g, "");
 
       if (country === "مصر") {
         return /^01[0125][0-9]{8}$/.test(cleanedPhone);
@@ -77,7 +97,8 @@ export const productFormSchema = z
       return true;
     },
     {
-      message: "رقم الهاتف غير صحيح. مصر: 01xxxxxxxxx، السعودية: 05xxxxxxxx، الإمارات: 05xxxxxxx",
+      message:
+        "رقم الهاتف غير صحيح. مصر: 01xxxxxxxxx، السعودية: 05xxxxxxxx، الإمارات: 05xxxxxxx",
       path: ["phone"],
     }
   );

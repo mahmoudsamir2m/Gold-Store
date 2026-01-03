@@ -15,6 +15,7 @@ import {
   COUNTRY_LABELS,
   type Country,
 } from "./schema/profile.schema";
+import Link from "next/link";
 
 type SellingItem = {
   id: number;
@@ -24,6 +25,7 @@ type SellingItem = {
   category: string;
   product_type: string;
   karat: string;
+  weight: number;
   description: string;
   country: string;
   city: string;
@@ -49,11 +51,11 @@ export default function ProfilePage() {
   // ===== جلب بيانات المستخدم =====
   useEffect(() => {
     const fetchProfile = async () => {
-      const storedToken = localStorage.getItem('token');
-      
+      const storedToken = localStorage.getItem("token");
+
       if (!storedToken) {
-        toast.error('يجب تسجيل الدخول أولاً');
-        router.push('/login');
+        toast.error("يجب تسجيل الدخول أولاً");
+        router.push("/login");
         return;
       }
 
@@ -97,10 +99,10 @@ export default function ProfilePage() {
 
   // ===== حفظ التعديلات =====
   const handleSave = async () => {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      toast.error('يجب تسجيل الدخول أولاً');
-      router.push('/login');
+      toast.error("يجب تسجيل الدخول أولاً");
+      router.push("/login");
       return;
     }
 
@@ -168,44 +170,46 @@ export default function ProfilePage() {
     }
   };
 
-const handleDelete = async (id: number) => {
-  if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) return;
+  const handleDelete = async (id: number) => {
+    if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) return;
 
-  const storedToken = localStorage.getItem('token');
-  if (!storedToken) {
-    toast.error('يجب تسجيل الدخول أولاً');
-    return;
-  }
-
-  try {
-    const res = await fetch(`/api/user/products/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${storedToken}`,
-      },
-    });
-
-    if (!res.ok) {
-      const result = await res.json();
-      throw new Error(result.error || "فشل الحذف");
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      toast.error("يجب تسجيل الدخول أولاً");
+      return;
     }
 
-    setSellingItems((prev) => prev.filter((item) => item.id !== id));
-    toast.success("تم حذف المنتج بنجاح");
-  } catch (err: any) {
-    console.error(err);
-    toast.error(err.message || "حدث خطأ أثناء الحذف");
-  }
-};
+    try {
+      const res = await fetch(`/api/user/products/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        const result = await res.json();
+        throw new Error(result.error || "فشل الحذف");
+      }
+
+      setSellingItems((prev) => prev.filter((item) => item.id !== id));
+      toast.success("تم حذف المنتج بنجاح");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "حدث خطأ أثناء الحذف");
+    }
+  };
 
   const handleEdit = (product: SellingItem) => {
     const productData = {
+      id: product.id,
       title: product.title,
       category: product.category,
       type: product.product_type,
       metal: product.metal,
       karat: product.karat,
       price: parseFloat(product.price) || 0,
+      weight: product.weight,
       description: product.description,
       country: product.country,
       city: product.city,
@@ -323,10 +327,16 @@ const handleDelete = async (id: number) => {
 
       {/* Selling Items */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-yellow-700">
             المنتجات المعروضة للبيع
           </CardTitle>
+          <Link
+            href="/add-product"
+            className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700"
+          >
+            إضافة منتج جديد
+          </Link>
         </CardHeader>
         <CardContent className="space-y-3">
           {sellingItems.length === 0 ? (

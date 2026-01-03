@@ -4,10 +4,9 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { productFormSchema } from "../add-product/schemas/productSchema";
+import { editProductFormSchema } from "../add-product/schemas/productSchema";
 import type {
   ProductFormData,
-  MetalType,
   CountryType,
 } from "../add-product/types/ProductFormTypes";
 import {
@@ -20,8 +19,8 @@ import {
   FiMapPin,
 } from "react-icons/fi";
 import Image from "next/image";
+import { toast } from "sonner";
 
-// ✅ استيرادات صحيحة (بدون مشاكل)
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -107,6 +106,7 @@ function EditProductForm() {
     metal: "gold",
     karat: "24",
     price: 0,
+    weight: 0,
     description: "",
     images: [],
     name: "",
@@ -115,6 +115,8 @@ function EditProductForm() {
     country: "مصر",
     city: "القاهرة",
   });
+  const [productId, setProductId] = useState<number | null>(null);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
 
   const editParam = searchParams.get("data");
 
@@ -122,9 +124,14 @@ function EditProductForm() {
   useEffect(() => {
     if (editParam) {
       try {
-        const data = JSON.parse(
-          decodeURIComponent(editParam)
-        ) as Partial<ProductFormData>;
+        const data = JSON.parse(decodeURIComponent(editParam)) as Partial<
+          ProductFormData & { id: number }
+        >;
+
+        // Extract product ID
+        if (data.id) {
+          setProductId(data.id);
+        }
 
         // Convert country from english to arabic
         let countryArabic = "مصر";
@@ -135,12 +142,17 @@ function EditProductForm() {
           countryArabic = "الإمارات";
         else if (countryStr === "egypt") countryArabic = "مصر";
 
+        // Store existing images for display and fallback
+        if (data.images && Array.isArray(data.images)) {
+          setExistingImages(data.images);
+        }
+
         setFormValues((prev) => ({
           ...prev,
           ...data,
           country: countryArabic as CountryType,
           city: data.city || "القاهرة",
-          images: [], // لا نستخدم الصور القديمة
+          images: [], // لا نستخدم الصور القديمة في الفورم
         }));
       } catch (e) {
         console.error("فشل تحليل بيانات التعديل", e);
@@ -159,7 +171,7 @@ function EditProductForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(editProductFormSchema),
     defaultValues: formValues,
   });
 
@@ -199,9 +211,114 @@ function EditProductForm() {
   };
 
   const onSubmit = async (data: ProductFormData) => {
-    console.log("تم حفظ التعديلات:", data);
-    previewImages.forEach(URL.revokeObjectURL);
-    router.push("/account");
+    if (!productId) {
+      toast.error("معرف المنتج مفقود");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("يجب تسجيل الدخول أولاً");
+        router.push("/login");
+        return;
+      }
+
+      // Update user profile if contact info changed
+      const updateRes = await fetch("/api/user/update", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: (() => {
+          const formData = new FormData();
+          formData.append("name", data.name);
+          formData.append("phone", data.phone);
+          formData.append("email", data.email);
+          formData.append(
+            "country",
+            data.country === "مصر"
+              ? "egypt"
+              : data.country === "السعودية"
+              ? "saudi"
+              : "uae"
+          );
+          formData.append("city", data.city);
+          return formData;
+        })(),
+      });
+
+      // Upload images if any new images are selected
+      const uploadedPaths: string[] = [];
+      if (data.images && data.images.length > 0) {
+        for (const file of data.images) {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const uploadRes = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/upload`,
+            {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+              body: formData,
+            }
+          );
+
+          const uploadData = await uploadRes.json();
+          if (uploadData.data?.path) {
+            uploadedPaths.push(uploadData.data.path);
+          }
+        }
+      }
+
+      // Update product
+      const productData = {
+        title: data.title,
+        metal: data.metal,
+        category: data.category,
+        product_type: data.type,
+        karat: data.karat,
+        price: data.price,
+        weight: data.weight,
+        description: data.description,
+        contact_name: data.name,
+        contact_phone: data.phone,
+        contact_email: data.email,
+        country:
+          data.country === "مصر"
+            ? "egypt"
+            : data.country === "السعودية"
+            ? "saudi"
+            : "uae",
+        city: data.city,
+        ...(uploadedPaths.length > 0 && { images: uploadedPaths }),
+      };
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(productData),
+        }
+      );
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || "فشل تعديل المنتج");
+      }
+
+      toast.success("تم تعديل المنتج بنجاح!");
+      previewImages.forEach(URL.revokeObjectURL);
+      router.push("/account");
+    } catch (error: unknown) {
+      console.error(error);
+      const errorMessage =
+        error instanceof Error ? error.message : "حدث خطأ أثناء تعديل المنتج";
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -345,8 +462,8 @@ function EditProductForm() {
               </div>
             </div>
 
-            {/* المعدن، العيار، السعر */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* المعدن، العيار، السعر، الوزن */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <Label className="block mb-1">المعدن</Label>
                 <select
@@ -383,6 +500,19 @@ function EditProductForm() {
                 />
                 {errors.price && (
                   <p className="text-red-500 text-sm">{errors.price.message}</p>
+                )}
+              </div>
+              <div>
+                <Label className="block mb-1">الوزن (جرام)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  {...register("weight", { valueAsNumber: true })}
+                />
+                {errors.weight && (
+                  <p className="text-red-500 text-sm">
+                    {errors.weight.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -430,7 +560,7 @@ function EditProductForm() {
                   {errors.images.message as string}
                 </p>
               )}
-              {previewImages.length > 0 && (
+              {previewImages.length > 0 ? (
                 <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
                   {previewImages.map((src, i) => (
                     <div
@@ -447,7 +577,24 @@ function EditProductForm() {
                     </div>
                   ))}
                 </div>
-              )}
+              ) : existingImages.length > 0 ? (
+                <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+                  {existingImages.map((src, i) => (
+                    <div
+                      key={i}
+                      className="shrink-0 w-24 h-24 bg-gray-100 rounded-lg overflow-hidden"
+                    >
+                      <Image
+                        src={src}
+                        width={96}
+                        height={96}
+                        alt={`الصورة الحالية ${i + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <Button
