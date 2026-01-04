@@ -11,7 +11,7 @@ interface FilterState {
   metal: "" | "gold" | "silver";
   type: "" | "jewelry" | "bullion";
   karat: string;
-  minPrice: number;
+  minPrice: number | "";
   maxPrice: number | "";
   city: string;
   rating: number;
@@ -65,9 +65,9 @@ export default function ProductsPageContent() {
       if (filters.metal) params.set("metal", filters.metal);
       if (filters.karat) params.set("karat", filters.karat);
       if (filters.type) params.set("product_type", filters.type);
-      if (filters.minPrice > 0)
+      if (typeof filters.minPrice === "number" && filters.minPrice > 0)
         params.set("min_price", filters.minPrice.toString());
-      if (filters.maxPrice > 0)
+      if (typeof filters.maxPrice === "number" && filters.maxPrice > 0)
         params.set("max_price", filters.maxPrice.toString());
       if (filters.city) params.set("city", filters.city);
       if (filters.search) params.set("search", filters.search);
