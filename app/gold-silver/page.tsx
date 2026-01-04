@@ -135,7 +135,10 @@ export default function GoldSilverPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {currentData.purity?.map((item: any, index: number) => (
             <div key={index} className="bg-gray-50 p-4 rounded-lg text-center">
-              <div className="font-bold text-lg">{item.name} ذهب</div>
+              <div className="font-bold text-lg">
+                {item.name}
+                {activeTab === "gold" ? "ذهب" : "فضة"}
+              </div>
               <div className="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full inline-block mb-2">
                 {item.purity} نقاء
               </div>
@@ -161,7 +164,9 @@ export default function GoldSilverPage() {
               key={index}
               className="flex justify-between py-2 border-b border-gray-200 last:border-b-0"
             >
-              <span>{item.name} - {item.purity}</span>
+              <span>
+                {item.name} - {item.purity}
+              </span>
               <span className="font-bold">
                 {currency}
                 {item.price?.toFixed(2) || 0} / جرام

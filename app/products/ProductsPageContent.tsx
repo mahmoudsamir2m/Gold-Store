@@ -12,7 +12,7 @@ interface FilterState {
   type: "" | "jewelry" | "bullion";
   karat: string;
   minPrice: number;
-  maxPrice: number;
+  maxPrice: number | "";
   city: string;
   rating: number;
   search: string;
@@ -46,7 +46,7 @@ export default function ProductsPageContent() {
     karat: "",
     type: "",
     minPrice: 0,
-    maxPrice: 5000,
+    maxPrice: "",
     city: "",
     rating: 0,
     search: searchParams.get("search") || "",

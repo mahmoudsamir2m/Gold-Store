@@ -31,7 +31,7 @@ export default function GoldCard({
         <div className="relative w-full h-32 rounded-lg overflow-hidden">
           {imageSrc ? (
             <Image
-              src={`https://gold-stats.com/api/${imageSrc}`}
+              src={`https://gold-stats.com/storage/${imageSrc}`}
               alt={title}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"

@@ -13,7 +13,9 @@ export async function GET() {
     const data = await res.json();
 
     const videoPath = data?.data?.value?.trim();
-    const videoUrl = videoPath ? `http://127.0.0.1:8000/${videoPath}` : null;
+    const videoUrl = videoPath
+      ? `https://gold-stats.com/storage/${videoPath}`
+      : null;
 
     return NextResponse.json({
       success: true,

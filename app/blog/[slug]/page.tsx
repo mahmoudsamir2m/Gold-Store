@@ -220,7 +220,7 @@ export default function BlogDetailsPage({ params }: PageProps) {
         {/* Image */}
         <div className="relative w-full order-1 lg:order-2 rounded-3xl overflow-hidden shadow-lg shadow-yellow-400/20 h-[300px] sm:h-[400px] lg:h-[500px] animate-image-float">
           <Image
-            src={`https://gold-stats.com/api/${blog.imageSrc}`}
+            src={`https://gold-stats.com/storage/${blog.imageSrc}`}
             alt={blog.title}
             fill
             className="object-cover rounded-3xl"
