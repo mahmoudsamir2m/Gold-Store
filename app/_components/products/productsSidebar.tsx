@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { FaSearch } from "react-icons/fa";
 
 interface Filters {
   metal: "" | "gold" | "silver";
@@ -36,9 +37,21 @@ export default function ProductsSidebar({
     price: false,
     city: false,
   });
+  const [searchInput, setSearchInput] = useState("");
 
   const toggleSection = (key: keyof typeof openSections) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const handleSearchClick = () => {
+    onFilterChange((prev) => ({ ...prev, search: searchInput }));
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearchClick();
+    }
+  };
 
   /* ===== العيارات ===== */
   const goldKarats = [
@@ -111,6 +124,28 @@ export default function ProductsSidebar({
 
   return (
     <div className="space-y-4 bg-white p-4 rounded-lg border text-sm rtl">
+      {/* ===== البحث ===== */}
+      <div>
+        <h3 className="font-semibold mb-2">البحث</h3>
+        <div className="relative flex gap-2">
+          <input
+            type="text"
+            placeholder="ابحث عن منتج..."
+            className="flex-1 border rounded h-9 px-2"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+          />
+          <button
+            type="button"
+            onClick={handleSearchClick}
+            className="bg-yellow-500 text-white px-3 rounded hover:bg-yellow-600"
+          >
+            <FaSearch />
+          </button>
+        </div>
+      </div>
+
       {/* ===== المعدن ===== */}
       <div>
         <h3 className="font-semibold mb-2">المعدن</h3>

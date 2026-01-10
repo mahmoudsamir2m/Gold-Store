@@ -195,8 +195,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const sendOTP = async (email: string) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("OTP sent to:", email);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/password/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "فشل إرسال رمز التحقق");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -205,9 +214,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyOTP = async (email: string, otp: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Mock verification: accept any 6-digit OTP
-      return /^\d{6}$/.test(otp);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/password/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "رمز التحقق غير صحيح");
+      }
+
+      return true;
+    } catch (error) {
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -220,8 +241,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Password reset with OTP for:", email);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/password/reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp, password: newPassword }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "فشل إعادة تعيين كلمة المرور");
+      }
     } finally {
       setIsLoading(false);
     }

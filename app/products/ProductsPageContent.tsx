@@ -52,8 +52,15 @@ export default function ProductsPageContent() {
     maxPrice: "",
     city: "",
     rating: 0,
-    search: searchParams.get("search") || "",
+    search: "",
   });
+
+  useEffect(() => {
+    const searchParam = searchParams.get("search");
+    if (searchParam) {
+      setFilters((prev) => ({ ...prev, search: searchParam }));
+    }
+  }, [searchParams]);
 
   /* ================== API CALL ================== */
   useEffect(() => {
@@ -141,14 +148,16 @@ export default function ProductsPageContent() {
 
         <div className="flex-1">
           {filters.search && (
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <span className="text-sm">نتائج البحث عن: </span>
-              <span className="font-bold">&ldquo;{filters.search}&rdquo;</span>
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-between">
+              <div>
+                <span className="text-sm">نتائج البحث عن: </span>
+                <span className="font-bold">&ldquo;{filters.search}&rdquo;</span>
+              </div>
               <button
                 onClick={() => setFilters((prev) => ({ ...prev, search: "" }))}
-                className="mr-2 text-xs text-red-600 hover:underline"
+                className="text-xs text-red-600 hover:underline px-2"
               >
-                إلغاء
+                إلغاء ✕
               </button>
             </div>
           )}

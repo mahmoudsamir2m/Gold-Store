@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 
 export default function PricesTicker() {
   const { selectedCountry } = useCountry();
-  const [prices, setPrices] = useState({ gold: 2000, silver: 25 });
+  const [goldPrices, setGoldPrices] = useState<any>({});
+  const [silverPrices, setSilverPrices] = useState<any>({});
   const [currency, setCurrency] = useState("ج");
 
   useEffect(() => {
@@ -16,27 +17,29 @@ export default function PricesTicker() {
         if (!res.ok) throw new Error();
         const data = await res.json();
         
-        if (data.gold?.spotPricePerGram) {
-          setPrices({
-            gold: data.gold.spotPricePerGram,
-            silver: data.silver?.spotPricePerGram || 25
+        if (data.gold?.purity) {
+          const goldMap: any = {};
+          data.gold.purity.forEach((item: any) => {
+            goldMap[item.name] = Math.round(item.price);
           });
-          setCurrency(data.currencySymbol || "ج");
+          setGoldPrices(goldMap);
         }
+        
+        if (data.silver?.purity) {
+          const silverMap: any = {};
+          data.silver.purity.forEach((item: any) => {
+            silverMap[item.name] = Math.round(item.price);
+          });
+          setSilverPrices(silverMap);
+        }
+        
+        setCurrency(data.currencySymbol || "ج");
       } catch {
-        setPrices({ gold: 2000, silver: 25 });
+        // Fallback values
       }
     }
     fetchPrices();
   }, [selectedCountry]);
-
-  const gold24 = Math.round(prices.gold);
-  const gold21 = Math.round(gold24 * 0.875);
-  const gold18 = Math.round(gold24 * 0.75);
-  const silver999 = Math.round(prices.silver);
-  const silver925 = Math.round(silver999 * 0.925);
-  const silver900 = Math.round(silver999 * 0.9);
-  const silver800 = Math.round(silver999 * 0.8);
 
   const TickerContent = () => (
     <>
@@ -44,33 +47,47 @@ export default function PricesTicker() {
         <span className="mx-4 md:mx-8 text-yellow-500">
           ✨ استثمر في الذهب.. قيمة بتزيد مع الوقت
         </span>
-        <span className="mx-4 md:mx-8">
-          الذهب 24: <span className="text-yellow-500">{currency}{gold24}</span>
-        </span>
-        <span className="mx-4 md:mx-8">
-          21: <span className="text-yellow-500">{currency}{gold21}</span>
-        </span>
-        <span className="mx-4 md:mx-8">
-          18: <span className="text-yellow-500">{currency}{gold18}</span>
-        </span>
+        {goldPrices['24K'] && (
+          <span className="mx-4 md:mx-8">
+            الذهب 24: <span className="text-yellow-500">{currency}{goldPrices['24K']}</span>
+          </span>
+        )}
+        {goldPrices['21K'] && (
+          <span className="mx-4 md:mx-8">
+            21: <span className="text-yellow-500">{currency}{goldPrices['21K']}</span>
+          </span>
+        )}
+        {goldPrices['18K'] && (
+          <span className="mx-4 md:mx-8">
+            18: <span className="text-yellow-500">{currency}{goldPrices['18K']}</span>
+          </span>
+        )}
       </div>
       <span className="mx-8 text-gray-500">|</span>
       <div className="flex items-center whitespace-nowrap">
         <span className="mx-4 md:mx-8 text-gray-300">
           ⚪ الفضة اختيار ذكي للأناقة والاستثمار
         </span>
-        <span className="mx-4 md:mx-8">
-          999: <span className="text-gray-300">{currency}{silver999}</span>
-        </span>
-        <span className="mx-4 md:mx-8">
-          925: <span className="text-gray-300">{currency}{silver925}</span>
-        </span>
-        <span className="mx-4 md:mx-8">
-          900: <span className="text-gray-300">{currency}{silver900}</span>
-        </span>
-        <span className="mx-4 md:mx-8">
-          800: <span className="text-gray-300">{currency}{silver800}</span>
-        </span>
+        {silverPrices['999'] && (
+          <span className="mx-4 md:mx-8">
+            999: <span className="text-gray-300">{currency}{silverPrices['999']}</span>
+          </span>
+        )}
+        {silverPrices['925'] && (
+          <span className="mx-4 md:mx-8">
+            925: <span className="text-gray-300">{currency}{silverPrices['925']}</span>
+          </span>
+        )}
+        {silverPrices['900'] && (
+          <span className="mx-4 md:mx-8">
+            900: <span className="text-gray-300">{currency}{silverPrices['900']}</span>
+          </span>
+        )}
+        {silverPrices['800'] && (
+          <span className="mx-4 md:mx-8">
+            800: <span className="text-gray-300">{currency}{silverPrices['800']}</span>
+          </span>
+        )}
       </div>
     </>
   );
