@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().min(1, "البريد الإلكتروني أو اسم المستخدم مطلوب"),
-  password: z.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
+  password: z.string().min(8, "كلمة المرور يجب أن تكون على الأقل 8 أحرف"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;

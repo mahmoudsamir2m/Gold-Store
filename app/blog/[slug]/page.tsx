@@ -3,121 +3,224 @@
 import * as React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { FaCalendar, FaUser } from "react-icons/fa";
-import { cardsData } from "@/app/_components/Home/BlogSection/data/data";
+import { FaCalendar } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ApiBlogItem,
+  BlogItem,
+} from "@/app/_components/Home/BlogSection/types/dataTypes";
 import "./blog-details.css";
 
 interface PageProps {
-  params: Promise<{ slug: string }>; 
+  params: Promise<{ slug: string }>;
 }
+
+const fetchBlog = async (id: string): Promise<ApiBlogItem> => {
+  const response = await fetch(`https://gold-stats.com/api/blogs/${id}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch blog");
+  }
+  return response.json();
+};
+
+const transformApiBlogToBlogItem = (apiBlog: ApiBlogItem): BlogItem => {
+  const firstContent =
+    apiBlog.titles
+      .flatMap((title) => title.contents.map((c) => c.content))
+      .find((text) => text.trim().length > 0) || "";
+
+  const description =
+    firstContent.length > 150
+      ? firstContent.substring(0, 150) + "..."
+      : firstContent;
+
+  const content = apiBlog.titles.flatMap((title) => {
+    const items: Array<{
+      type: "heading" | "paragraph" | "list";
+      value: string | string[];
+    }> = [];
+
+    items.push({
+      type: "heading",
+      value: title.title,
+    });
+
+    title.contents.forEach((contentItem) => {
+      const lines = contentItem.content.split("\n").map((line) => line.trim());
+
+      const hasListItems = lines.some(
+        (line) =>
+          line.startsWith("•") || line.startsWith("-") || line.startsWith("–")
+      );
+
+      if (hasListItems) {
+        const listItems = lines
+          .filter(
+            (line) =>
+              line.startsWith("•") ||
+              line.startsWith("-") ||
+              line.startsWith("–")
+          )
+          .map((line) => line.replace(/^[\s•\-–]+/, "").trim());
+
+        items.push({
+          type: "list",
+          value: listItems,
+        });
+      } else {
+        items.push({
+          type: "paragraph",
+          value: contentItem.content,
+        });
+      }
+    });
+
+    return items;
+  });
+
+  return {
+    id: apiBlog.id,
+    slug: apiBlog.id.toString(),
+    imageSrc: apiBlog.image_path,
+    title: apiBlog.name,
+    description,
+    date: new Date(apiBlog.created_at).toLocaleDateString("ar-EG", {
+      day: "numeric",
+      month: "long",
+    }),
+    content,
+  };
+};
 
 export default function BlogDetailsPage({ params }: PageProps) {
   const { slug } = React.use(params);
 
-  const blog = cardsData.find((item) => item.slug === slug);
+  const {
+    data: apiBlog,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["blog", slug],
+    queryFn: () => fetchBlog(slug),
+  });
+
+  if (isLoading) {
+    return (
+      <section className="relative bg-neutral-900 text-white overflow-hidden">
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-yellow-400 text-xl">جاري التحميل...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    console.error("Error fetching blog:", error);
+    return notFound();
+  }
+
+  const blog = apiBlog ? transformApiBlogToBlogItem(apiBlog) : null;
   if (!blog) return notFound();
-  const renderParticles = () => {
-    return Array.from({ length: 30 }).map((_, i) => {
+
+  const renderParticles = () =>
+    Array.from({ length: 30 }).map((_, i) => {
       const size = Math.random() * 4 + 2;
       const top = Math.random() * 100;
       const left = Math.random() * 100;
-      const delay = Math.random() * 5;
-      const duration = 5 + Math.random() * 5;
 
       return (
         <div
           key={i}
           className="absolute bg-yellow-400 rounded-full opacity-30 animate-floating-particle"
           style={{
-            width: `${size}px`,
-            height: `${size}px`,
+            width: size,
+            height: size,
             top: `${top}%`,
             left: `${left}%`,
-            animationDelay: `${delay}s`,
-            animationDuration: `${duration}s`,
           }}
         />
       );
     });
-  };
 
   return (
     <section className="relative bg-neutral-900 text-white overflow-hidden">
-      {/* Gold shimmer particles */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-neutral-900 to-black/80 overflow-hidden">
-        {renderParticles()}
-      </div>
+      <div className="absolute inset-0">{renderParticles()}</div>
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-16 py-16 lg:py-24 flex flex-col lg:grid lg:grid-cols-2 gap-12 lg:gap-16">
-        {/* Title + Content */}
+      <div className="relative max-w-6xl mx-auto px-4 lg:px-16 py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-2 gap-16">
+        {/* Content */}
         <div className="flex flex-col gap-8 order-2 lg:order-1">
-          {/* Title */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight bg-gradient-to-l from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent animate-title-glow">
+          <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-l from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
             {blog.title}
           </h1>
 
-          {/* Card Content */}
-          <article className="relative bg-white/10 backdrop-blur-md border border-yellow-400/20 text-gray-100 rounded-3xl p-6 sm:p-10 shadow-lg shadow-yellow-400/30 flex flex-col gap-6 animate-card-floating">
-            {/* Meta */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-start sm:justify-end gap-4 sm:gap-6 text-sm text-gray-300 mb-4">
-              <span className="flex items-center gap-2">
-                <FaUser className="text-yellow-400" />
-                {blog.author}
-              </span>
-              <span className="flex items-center gap-2">
-                <FaCalendar className="text-yellow-400" />
-                {blog.date}
-              </span>
+          <article
+            className="
+              relative
+              bg-white/10
+              backdrop-blur-md
+              border border-yellow-400/20
+              rounded-3xl
+              p-6 sm:p-10
+              shadow-lg shadow-yellow-400/30
+              overflow-hidden
+            "
+          >
+            <div className="flex items-center gap-2 text-sm text-gray-300 mb-4">
+              <FaCalendar className="text-yellow-400" />
+              {blog.date}
             </div>
 
-            {/* Content Body */}
-            <div className="space-y-6 sm:space-y-8 leading-relaxed text-base">
+            {/*  المحتوى محمي من الخروج */}
+            <div className="space-y-6 break-words break-all">
               {blog.content.map((item, index) => {
-                switch (item.type) {
-                  case "heading":
-                    return (
-                      <h2
-                        key={index}
-                        className="text-2xl sm:text-3xl font-bold text-yellow-400 animate-pulse-heading"
-                      >
-                        {item.value as string}
-                      </h2>
-                    );
-                  case "list":
-                    return (
-                      <ul
-                        key={index}
-                        className="space-y-2 sm:space-y-3 pr-4 sm:pr-6"
-                      >
-                        {(item.value as string[]).map((li, i) => (
-                          <li
-                            key={i}
-                            className="relative pr-5 animate-pulse-bullet"
-                          >
-                            <span className="absolute right-0 top-1 w-2 h-2 bg-yellow-400 rotate-45" />
-                            {li}
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  case "paragraph":
-                  default:
-                    return <p key={index}>{item.value as string}</p>;
+                if (item.type === "heading") {
+                  return (
+                    <h2
+                      key={index}
+                      className="text-2xl font-bold text-yellow-400 border-b border-yellow-400/30 pb-2 break-words"
+                    >
+                      {item.value}
+                    </h2>
+                  );
                 }
+
+                if (item.type === "list") {
+                  return (
+                    <ul key={index} className="space-y-2 pr-6">
+                      {(item.value as string[]).map((li, i) => (
+                        <li
+                          key={i}
+                          className="relative pr-5 break-words break-all"
+                        >
+                          <span className="absolute right-0 top-2 w-2 h-2 bg-yellow-400 rotate-45" />
+                          {li}
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                }
+
+                return (
+                  <p
+                    key={index}
+                    className="text-gray-200 break-words break-all"
+                  >
+                    {(item.value as string).replace(/\s+/g, " ")}
+                  </p>
+                );
               })}
             </div>
           </article>
         </div>
 
         {/* Image */}
-        <div className="relative w-full order-1 lg:order-2 rounded-3xl overflow-hidden shadow-lg shadow-yellow-400/20 h-[300px] sm:h-[400px] lg:h-[500px] animate-image-float">
+        <div className="relative h-[300px] lg:h-[500px] rounded-3xl overflow-hidden shadow-lg shadow-yellow-400/20">
           <Image
-            src={blog.imageSrc}
+            src={`https://gold-stats.com/storage/${blog.imageSrc}`}
             alt={blog.title}
             fill
-            className="object-cover rounded-3xl"
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         </div>
       </div>
     </section>

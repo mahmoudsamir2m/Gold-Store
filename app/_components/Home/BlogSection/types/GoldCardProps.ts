@@ -3,6 +3,5 @@ export interface GoldCardProps {
   title: string;
   description: string;
   date: string;
-  author: string;
-  href: string;
+  slug: string;
 }

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { productFormSchema } from "./schemas/productSchema";
-import type { ProductFormData, MetalType } from "./types/ProductFormTypes";
+import type { ProductFormData} from "./types/ProductFormTypes";
 import {
   FiTag,
   FiUser,
@@ -16,6 +16,7 @@ import {
   FiMapPin,
 } from "react-icons/fi";
 import Image from "next/image";
+import { toast } from "sonner";
 
 // ✅ استيرادات صحيحة (بدون مشاكل)
 import { Button } from "@/components/ui/button";
@@ -110,25 +111,32 @@ export default function AddProductPage() {
   // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        alert('يجب تسجيل الدخول أولاً');
-        router.push('/login');
+        toast.error("يجب تسجيل الدخول أولاً");
+        router.push("/login");
         return;
       }
 
       try {
-        const res = await fetch('/api/user/me', {
+        const res = await fetch("/api/user/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         if (res.ok) {
           const data = await res.json();
-          setValue('name', data.name || '');
-          setValue('phone', data.phone || '');
-          setValue('email', data.email || '');
-          setValue('country', data.country === 'egypt' ? 'مصر' : data.country === 'saudi' ? 'السعودية' : 'الإمارات');
-          setValue('city', data.city || '');
+          setValue("name", data.name || "");
+          setValue("phone", data.phone || "");
+          setValue("email", data.email || "");
+          setValue(
+            "country",
+            data.country === "egypt"
+              ? "مصر"
+              : data.country === "saudi"
+              ? "السعودية"
+              : "الإمارات"
+          );
+          setValue("city", data.city || "");
         }
       } catch (error) {
         console.error(error);
@@ -172,24 +180,31 @@ export default function AddProductPage() {
 
   const onSubmit = async (data: ProductFormData) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        alert('يجب تسجيل الدخول أولاً');
-        router.push('/login');
+        toast.error("يجب تسجيل الدخول أولاً");
+        router.push("/login");
         return;
       }
 
       // Update user profile if contact info changed
-      const updateRes = await fetch('/api/user/update', {
-        method: 'POST',
+      const updateRes = await fetch("/api/user/update", {
+        method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: (() => {
           const formData = new FormData();
-          formData.append('name', data.name);
-          formData.append('phone', data.phone);
-          formData.append('email', data.email);
-          formData.append('country', data.country === 'مصر' ? 'egypt' : data.country === 'السعودية' ? 'saudi' : 'uae');
-          formData.append('city', data.city);
+          formData.append("name", data.name);
+          formData.append("phone", data.phone);
+          formData.append("email", data.email);
+          formData.append(
+            "country",
+            data.country === "مصر"
+              ? "egypt"
+              : data.country === "السعودية"
+              ? "saudi"
+              : "uae"
+          );
+          formData.append("city", data.city);
           return formData;
         })(),
       });
@@ -198,14 +213,17 @@ export default function AddProductPage() {
       const uploadedPaths: string[] = [];
       for (const file of data.images) {
         const formData = new FormData();
-        formData.append('file', file);
-        
-        const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
-          body: formData,
-        });
-        
+        formData.append("file", file);
+
+        const uploadRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/upload`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          }
+        );
+
         const uploadData = await uploadRes.json();
         if (uploadData.data?.path) {
           uploadedPaths.push(uploadData.data.path);
@@ -224,16 +242,21 @@ export default function AddProductPage() {
         contact_name: data.name,
         contact_phone: data.phone,
         contact_email: data.email,
-        country: data.country === 'مصر' ? 'egypt' : data.country === 'السعودية' ? 'saudi' : 'uae',
+        country:
+          data.country === "مصر"
+            ? "egypt"
+            : data.country === "السعودية"
+            ? "saudi"
+            : "uae",
         city: data.city,
         images: uploadedPaths,
       };
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(productData),
       });
@@ -241,15 +264,15 @@ export default function AddProductPage() {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.message || 'فشل إضافة المنتج');
+        throw new Error(result.message || "فشل إضافة المنتج");
       }
 
-      alert('تم إضافة المنتج بنجاح! في انتظار موافقة الإدارة');
+      toast.success("تم إضافة المنتج بنجاح! في انتظار موافقة الإدارة");
       previewImages.forEach(URL.revokeObjectURL);
-      router.push('/account');
+      router.push("/account");
     } catch (error: any) {
       console.error(error);
-      alert(error.message || 'حدث خطأ أثناء إضافة المنتج');
+      toast.error(error.message || "حدث خطأ أثناء إضافة المنتج");
     }
   };
 
@@ -258,260 +281,281 @@ export default function AddProductPage() {
       {loading ? (
         <div className="text-center py-10">جاري التحميل...</div>
       ) : (
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center text-yellow-600">
-            إضافة منتج جديد
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            {/* بيانات التواصل */}
-            <div className="border-b pb-4 mb-5">
-              <h3 className="text-lg font-semibold text-yellow-700 mb-3">
-                بيانات التواصل
-              </h3>
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center text-yellow-600">
+              إضافة منتج جديد
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              {/* بيانات التواصل */}
+              <div className="border-b pb-4 mb-5">
+                <h3 className="text-lg font-semibold text-yellow-700 mb-3">
+                  بيانات التواصل
+                </h3>
+                <div>
+                  <Label className="flex items-center gap-2 mb-1">
+                    <FiUser className="text-yellow-500" /> الاسم الكامل
+                  </Label>
+                  <Input {...register("name")} />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <Label className="flex items-center gap-2 mb-1">
+                      <FiPhone className="text-yellow-500" /> رقم الهاتف
+                    </Label>
+                    <Input {...register("phone")} placeholder="01xxxxxxxxx" />
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm">
+                        {errors.phone.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="flex items-center gap-2 mb-1">
+                      <FiMail className="text-yellow-500" /> البريد الإلكتروني
+                    </Label>
+                    <Input type="email" {...register("email")} />
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <Label className="flex items-center gap-2 mb-1">
+                      <FiMapPin className="text-yellow-500" /> الدولة
+                    </Label>
+                    <select
+                      {...register("country")}
+                      className="w-full p-2 border border-gray-300 rounded-md bg-white"
+                    >
+                      <option value="مصر">مصر</option>
+                      <option value="الإمارات">الإمارات</option>
+                      <option value="السعودية">السعودية</option>
+                    </select>
+                    {errors.country && (
+                      <p className="text-red-500 text-sm">
+                        {errors.country.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="flex items-center gap-2 mb-1">
+                      <FiMapPin className="text-yellow-500" /> المدينة
+                    </Label>
+                    <select
+                      {...register("city")}
+                      className="w-full p-2 border border-gray-300 rounded-md bg-white"
+                    >
+                      {(CITIES[selectedCountry] || []).map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.city && (
+                      <p className="text-red-500 text-sm">
+                        {errors.city.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* العنوان */}
               <div>
                 <Label className="flex items-center gap-2 mb-1">
-                  <FiUser className="text-yellow-500" /> الاسم الكامل
+                  <FiTag className="text-yellow-500" /> العنوان
                 </Label>
-                <Input {...register("name")} />
-                {errors.name && (
-                  <p className="text-red-500 text-sm">{errors.name.message}</p>
+                <Input {...register("title")} />
+                {errors.title && (
+                  <p className="text-red-500 text-sm">{errors.title.message}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              {/* الفئة + النوع */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label className="flex items-center gap-2 mb-1">
-                    <FiPhone className="text-yellow-500" /> رقم الهاتف
-                  </Label>
-                  <Input {...register("phone")} placeholder="01xxxxxxxxx" />
-                  {errors.phone && (
-                    <p className="text-red-500 text-sm">
-                      {errors.phone.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label className="flex items-center gap-2 mb-1">
-                    <FiMail className="text-yellow-500" /> البريد الإلكتروني
-                  </Label>
-                  <Input type="email" {...register("email")} />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <div>
-                  <Label className="flex items-center gap-2 mb-1">
-                    <FiMapPin className="text-yellow-500" /> الدولة
-                  </Label>
+                  <Label className="block mb-1">الفئة</Label>
                   <select
-                    {...register("country")}
+                    {...register("category")}
                     className="w-full p-2 border border-gray-300 rounded-md bg-white"
                   >
-                    <option value="مصر">مصر</option>
-                    <option value="الإمارات">الإمارات</option>
-                    <option value="السعودية">السعودية</option>
-                  </select>
-                  {errors.country && (
-                    <p className="text-red-500 text-sm">
-                      {errors.country.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label className="flex items-center gap-2 mb-1">
-                    <FiMapPin className="text-yellow-500" /> المدينة
-                  </Label>
-                  <select
-                    {...register("city")}
-                    className="w-full p-2 border border-gray-300 rounded-md bg-white"
-                  >
-                    {(CITIES[selectedCountry] || []).map((city) => (
-                      <option key={city} value={city}>
-                        {city}
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
                       </option>
                     ))}
                   </select>
-                  {errors.city && (
+                  {errors.category && (
                     <p className="text-red-500 text-sm">
-                      {errors.city.message}
+                      {errors.category.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label className="block mb-1">النوع</Label>
+                  <select
+                    {...register("type")}
+                    className="w-full p-2 border border-gray-300 rounded-md bg-white"
+                  >
+                    {subTypes.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.type && (
+                    <p className="text-red-500 text-sm">
+                      {errors.type.message}
                     </p>
                   )}
                 </div>
               </div>
-            </div>
 
-            {/* العنوان */}
-            <div>
-              <Label className="flex items-center gap-2 mb-1">
-                <FiTag className="text-yellow-500" /> العنوان
-              </Label>
-              <Input {...register("title")} />
-              {errors.title && (
-                <p className="text-red-500 text-sm">{errors.title.message}</p>
-              )}
-            </div>
+              {/* المعدن، العيار، السعر، الوزن */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <Label className="block mb-1">المعدن</Label>
+                  <select
+                    {...register("metal")}
+                    className="w-full p-2 border border-gray-300 rounded-md bg-white"
+                  >
+                    <option value="gold">ذهب</option>
+                    <option value="silver">فضة</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="block mb-1">العيار</Label>
+                  <select
+                    {...register("karat")}
+                    className="w-full p-2 border border-gray-300 rounded-md bg-white"
+                    disabled={selectedCategory === "bullion"}
+                  >
+                    {karatOptions.map((k) => (
+                      <option key={k} value={k}>
+                        {selectedMetal === "gold" ? `عيار ${k}` : k}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.karat && (
+                    <p className="text-red-500 text-sm">
+                      {errors.karat.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label className="block mb-1">السعر ({currency})</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    {...register("price", { valueAsNumber: true })}
+                  />
+                  {errors.price && (
+                    <p className="text-red-500 text-sm">
+                      {errors.price.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label className="block mb-1">الوزن (جرام)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    {...register("weight", { valueAsNumber: true })}
+                  />
+                  {errors.weight && (
+                    <p className="text-red-500 text-sm">
+                      {errors.weight.message}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-            {/* الفئة + النوع */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* الوصف - باستخدام textarea عادي */}
               <div>
-                <Label className="block mb-1">الفئة</Label>
-                <select
-                  {...register("category")}
-                  className="w-full p-2 border border-gray-300 rounded-md bg-white"
-                >
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </option>
-                  ))}
-                </select>
-                {errors.category && (
+                <Label className="flex items-center gap-2 mb-1">
+                  <FiFileText className="text-yellow-500" /> الوصف
+                </Label>
+                <textarea
+                  {...register("description")}
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+                {errors.description && (
                   <p className="text-red-500 text-sm">
-                    {errors.category.message}
+                    {errors.description.message}
                   </p>
                 )}
               </div>
-              <div>
-                <Label className="block mb-1">النوع</Label>
-                <select
-                  {...register("type")}
-                  className="w-full p-2 border border-gray-300 rounded-md bg-white"
-                >
-                  {subTypes.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
-                {errors.type && (
-                  <p className="text-red-500 text-sm">{errors.type.message}</p>
-                )}
-              </div>
-            </div>
 
-            {/* المعدن، العيار، السعر */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* رفع الصور */}
               <div>
-                <Label className="block mb-1">المعدن</Label>
-                <select
-                  {...register("metal")}
-                  className="w-full p-2 border border-gray-300 rounded-md bg-white"
-                >
-                  <option value="gold">ذهب</option>
-                  <option value="silver">فضة</option>
-                </select>
-              </div>
-              <div>
-                <Label className="block mb-1">العيار</Label>
-                <select
-                  {...register("karat")}
-                  className="w-full p-2 border border-gray-300 rounded-md bg-white"
-                  disabled={selectedCategory === "bullion"}
-                >
-                  {karatOptions.map((k) => (
-                    <option key={k} value={k}>
-                      {selectedMetal === "gold" ? `عيار ${k}` : k}
-                    </option>
-                  ))}
-                </select>
-                {errors.karat && (
-                  <p className="text-red-500 text-sm">{errors.karat.message}</p>
-                )}
-              </div>
-              <div>
-                <Label className="block mb-1">السعر ({currency})</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  {...register("price", { valueAsNumber: true })}
+                <Label className="flex items-center gap-2 mb-2">
+                  <FiImage className="text-yellow-500" /> الصور
+                </Label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  className="hidden"
                 />
-                {errors.price && (
-                  <p className="text-red-500 text-sm">{errors.price.message}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full border-dashed border-2 border-gray-400 text-gray-600 hover:bg-gray-50"
+                  onClick={triggerFileInput}
+                >
+                  اختر صورًا (يمكنك اختيار أكثر من صورة)
+                </Button>
+                {errors.images?.message && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.images.message as string}
+                  </p>
+                )}
+                {previewImages.length > 0 && (
+                  <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+                    {previewImages.map((src, i) => (
+                      <div
+                        key={i}
+                        className="shrink-0 w-24 h-24 bg-gray-100 rounded-lg overflow-hidden"
+                      >
+                        <Image
+                          src={src}
+                          width={96}
+                          height={96}
+                          alt={`معاينة ${i + 1}`}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
-            </div>
 
-            {/* الوصف - باستخدام textarea عادي */}
-            <div>
-              <Label className="flex items-center gap-2 mb-1">
-                <FiFileText className="text-yellow-500" /> الوصف
-              </Label>
-              <textarea
-                {...register("description")}
-                rows={3}
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-              {errors.description && (
-                <p className="text-red-500 text-sm">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-
-            {/* رفع الصور */}
-            <div>
-              <Label className="flex items-center gap-2 mb-2">
-                <FiImage className="text-yellow-500" /> الصور
-              </Label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                className="hidden"
-              />
               <Button
-                type="button"
-                variant="outline"
-                className="w-full border-dashed border-2 border-gray-400 text-gray-600 hover:bg-gray-50"
-                onClick={triggerFileInput}
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-medium rounded-lg transition"
               >
-                اختر صورًا (يمكنك اختيار أكثر من صورة)
+                {isSubmitting ? "جاري الحفظ..." : "إضافة المنتج"}
               </Button>
-              {errors.images?.message && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.images.message as string}
-                </p>
-              )}
-              {previewImages.length > 0 && (
-                <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
-                  {previewImages.map((src, i) => (
-                    <div
-                      key={i}
-                      className="shrink-0 w-24 h-24 bg-gray-100 rounded-lg overflow-hidden"
-                    >
-                      <Image
-                        src={src}
-                        width={96}
-                        height={96}
-                        alt={`معاينة ${i + 1}`}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-medium rounded-lg transition"
-            >
-              {isSubmitting ? "جاري الحفظ..." : "إضافة المنتج"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+            </form>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

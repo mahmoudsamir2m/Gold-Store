@@ -8,4 +8,5 @@ export interface ProductCardProps {
   width: string;
   label?: string;
   country?: string;
+  weight?: number;
 }

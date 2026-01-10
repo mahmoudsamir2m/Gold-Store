@@ -221,13 +221,7 @@ export default function ProductDetailPage() {
       <div className="container max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg">
         <div className="flex flex-col md:flex-row-reverse gap-10" dir="rtl">
           <div className="md:w-1/2">
-            <ImagesSlider
-              images={
-                product.images.length > 0
-                  ? product.images
-                  : ["/placeholder.jpg"]
-              }
-            />
+            <ImagesSlider images={product.images} />
           </div>
           <div className="md:w-1/2">
             <ProductInfo product={product} />

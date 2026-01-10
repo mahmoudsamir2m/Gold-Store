@@ -15,6 +15,7 @@ interface Product {
   originalPrice?: number;
   rating: number;
   images: string[];
+  weight?: number;
 }
 
 interface RelatedProductsProps {
@@ -67,6 +68,7 @@ export default function RelatedProducts({
             rating={product.rating}
             price={product.price}
             originalPrice={product.originalPrice}
+            weight={product.weight}
             width="w-70 lg:w-60"
           />
         </SwiperSlide>

@@ -6,8 +6,8 @@ interface Filters {
   metal: "" | "gold" | "silver";
   type: "" | "jewelry" | "bullion";
   karat: string;
-  minPrice: number;
-  maxPrice: number;
+  minPrice: number | "";
+  maxPrice: number | "";
   city: string;
   rating: number;
   search: string;
@@ -40,13 +40,14 @@ export default function ProductsSidebar({
   const toggleSection = (key: keyof typeof openSections) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  // ===== العيارات =====
+  /* ===== العيارات ===== */
   const goldKarats = [
     { value: "24", label: "24 عيار" },
     { value: "22", label: "22 عيار" },
     { value: "21", label: "21 عيار" },
     { value: "18", label: "18 عيار" },
   ];
+
   const silverKarats = [
     { value: "925", label: "925" },
     { value: "900", label: "900" },
@@ -58,14 +59,14 @@ export default function ProductsSidebar({
   else if (filters.metal === "silver") karatOptions = silverKarats;
   else karatOptions = [...goldKarats, ...silverKarats];
 
-  // ===== سبائك = 24 تلقائي =====
+  /* ===== سبائك = 24 تلقائي ===== */
   useEffect(() => {
     if (filters.type === "bullion") {
       onFilterChange((prev) => ({ ...prev, karat: "24" }));
     }
   }, [filters.type, onFilterChange]);
 
-  // ===== المدن حسب الدولة =====
+  /* ===== المدن ===== */
   const citiesByCountry: Record<string, string[]> = {
     مصر: [
       "القاهرة",
@@ -105,12 +106,11 @@ export default function ProductsSidebar({
     ],
   };
 
-  // لو userCountry مش موجود نعرض مصر تلقائي
   const country = userCountry || "مصر";
   const cities = citiesByCountry[country] || [];
 
   return (
-    <div className="space-y-4 bg-white p-4 rounded-lg border text-sm rtl min-h-fit">
+    <div className="space-y-4 bg-white p-4 rounded-lg border text-sm rtl">
       {/* ===== المعدن ===== */}
       <div>
         <h3 className="font-semibold mb-2">المعدن</h3>
@@ -148,6 +148,7 @@ export default function ProductsSidebar({
           <span>النوع</span>
           <span>{openSections.type ? "−" : "+"}</span>
         </button>
+
         {openSections.type && (
           <div className="space-y-2 pr-2">
             <label className="flex gap-2 items-center">
@@ -161,6 +162,7 @@ export default function ProductsSidebar({
               />
               مشغولات
             </label>
+
             <label className="flex gap-2 items-center">
               <input
                 type="radio"
@@ -183,6 +185,7 @@ export default function ProductsSidebar({
           <span>العيار</span>
           <span>{openSections.karat ? "−" : "+"}</span>
         </button>
+
         {openSections.karat && (
           <div className="space-y-2 pr-2">
             {filters.type !== "bullion" && (
@@ -196,6 +199,7 @@ export default function ProductsSidebar({
                 الكل
               </label>
             )}
+
             {karatOptions.map((k) => (
               <label key={k.value} className="flex gap-2 items-center">
                 <input
@@ -223,6 +227,7 @@ export default function ProductsSidebar({
           <span>السعر</span>
           <span>{openSections.price ? "−" : "+"}</span>
         </button>
+
         {openSections.price && (
           <div className="space-y-2">
             <div className="flex gap-2">
@@ -230,24 +235,38 @@ export default function ProductsSidebar({
                 type="number"
                 placeholder="من"
                 className="w-1/2 border px-2 h-8 rounded"
-                value={filters.minPrice || ""}
+                value={filters.minPrice}
                 onChange={(e) =>
-                  onFilterChange({ ...filters, minPrice: +e.target.value || 0 })
+                  onFilterChange({
+                    ...filters,
+                    minPrice:
+                      e.target.value === "" ? "" : Number(e.target.value),
+                  })
                 }
               />
+
               <input
                 type="number"
                 placeholder="إلى"
                 className="w-1/2 border px-2 h-8 rounded"
-                value={filters.maxPrice || ""}
+                value={filters.maxPrice}
                 onChange={(e) =>
-                  onFilterChange({ ...filters, maxPrice: +e.target.value || 0 })
+                  onFilterChange({
+                    ...filters,
+                    maxPrice:
+                      e.target.value === "" ? "" : Number(e.target.value),
+                  })
                 }
               />
             </div>
+
             <button
               onClick={() =>
-                onFilterChange({ ...filters, minPrice: 0, maxPrice: 0 })
+                onFilterChange({
+                  ...filters,
+                  minPrice: "",
+                  maxPrice: "",
+                })
               }
               className="text-xs text-gray-500 hover:text-gray-700"
             >
@@ -264,60 +283,12 @@ export default function ProductsSidebar({
           <input
             type="text"
             placeholder="ابحث عن مدينة..."
-            className="w-full border rounded h-9 px-2 bg-white"
-            value={filters.city || ""}
-            onChange={(e) => {
-              onFilterChange((prev) => ({ ...prev, city: e.target.value }));
-            }}
-            onFocus={() => setOpenSections((prev) => ({ ...prev, city: true }))}
-            onBlur={(e) => {
-              setTimeout(() => {
-                const selectedCity = cities.find((c) => c === filters.city);
-                if (!selectedCity && (filters.city || "").trim() !== "") {
-                  onFilterChange((prev) => ({ ...prev, city: "" }));
-                }
-                setOpenSections((prev) => ({ ...prev, city: false }));
-              }, 200);
-            }}
+            className="w-full border rounded h-9 px-2"
+            value={filters.city}
+            onChange={(e) =>
+              onFilterChange((prev) => ({ ...prev, city: e.target.value }))
+            }
           />
-
-          {openSections.city && (
-            <ul className="absolute top-full left-0 right-0 bg-white border rounded shadow-lg z-10">
-              <li
-                onClick={() => {
-                  onFilterChange({ ...filters, city: "" });
-                  setOpenSections((prev) => ({ ...prev, city: false }));
-                }}
-                className={`px-4 py-2 cursor-pointer hover:bg-yellow-50 ${
-                  !filters.city ? "bg-yellow-100" : ""
-                }`}
-              >
-                الكل
-              </li>
-
-              {cities
-                .filter((city) => {
-                  const searchTerm = (filters.city || "").trim().toLowerCase();
-                  return (
-                    searchTerm === "" || city.toLowerCase().includes(searchTerm)
-                  );
-                })
-                .map((city) => (
-                  <li
-                    key={city}
-                    onClick={() => {
-                      onFilterChange({ ...filters, city });
-                      setOpenSections((prev) => ({ ...prev, city: false }));
-                    }}
-                    className={`px-4 py-2 cursor-pointer hover:bg-yellow-50 ${
-                      filters.city === city ? "bg-yellow-100" : ""
-                    }`}
-                  >
-                    {city}
-                  </li>
-                ))}
-            </ul>
-          )}
         </div>
       </div>
     </div>

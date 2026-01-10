@@ -14,9 +14,21 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
-  signup: (email: string, password: string, name: string, phone: string, country: string) => Promise<void>;
+  signup: (
+    email: string,
+    password: string,
+    name: string,
+    phone: string,
+    country: string
+  ) => Promise<void>;
   logout: () => void;
-  resetPassword: (email: string) => Promise<void>;
+  sendOTP: (email: string) => Promise<void>;
+  verifyOTP: (email: string, otp: string) => Promise<boolean>;
+  resetPasswordWithOTP: (
+    email: string,
+    otp: string,
+    newPassword: string
+  ) => Promise<void>;
   updateUser: (updates: Partial<User>) => void;
 }
 
@@ -53,15 +65,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'فشل تسجيل الدخول');
+        throw new Error(data.message || "فشل تسجيل الدخول");
       }
 
       const userData: User = {
@@ -71,9 +83,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar: data.data.user.avatar,
       };
 
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('auth-storage', JSON.stringify({ state: { token: data.data.token, user: userData, isAuthenticated: true }, version: 0 }));
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem(
+        "auth-storage",
+        JSON.stringify({
+          state: {
+            token: data.data.token,
+            user: userData,
+            isAuthenticated: true,
+          },
+          version: 0,
+        })
+      );
       setUser(userData);
     } finally {
       setIsLoading(false);
@@ -98,19 +120,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signup = async (email: string, password: string, name: string, phone: string, country: string) => {
+  const signup = async (
+    email: string,
+    password: string,
+    name: string,
+    phone: string,
+    country: string
+  ) => {
     setIsLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, password_confirmation: password, name, phone, country }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          password_confirmation: password,
+          name,
+          phone,
+          country,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'فشل التسجيل');
+        throw new Error(data.message || "فشل التسجيل");
       }
 
       const userData: User = {
@@ -120,9 +155,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         avatar: data.data.user.avatar,
       };
 
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('auth-storage', JSON.stringify({ state: { token: data.data.token, user: userData, isAuthenticated: true }, version: 0 }));
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem(
+        "auth-storage",
+        JSON.stringify({
+          state: {
+            token: data.data.token,
+            user: userData,
+            isAuthenticated: true,
+          },
+          version: 0,
+        })
+      );
       setUser(userData);
     } finally {
       setIsLoading(false);
@@ -130,28 +175,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       try {
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
         });
       } catch (error) {
-        console.error('Logout error:', error);
+        console.error("Logout error:", error);
       }
     }
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('auth-storage');
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("auth-storage");
     setUser(null);
   };
 
-  const resetPassword = async (email: string) => {
+  const sendOTP = async (email: string) => {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Password reset email sent to:", email);
+      console.log("OTP sent to:", email);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyOTP = async (email: string, otp: string): Promise<boolean> => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Mock verification: accept any 6-digit OTP
+      return /^\d{6}$/.test(otp);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetPasswordWithOTP = async (
+    email: string,
+    otp: string,
+    newPassword: string
+  ) => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("Password reset with OTP for:", email);
     } finally {
       setIsLoading(false);
     }
@@ -166,7 +236,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginWithGoogle,
         signup,
         logout,
-        resetPassword,
+        sendOTP,
+        verifyOTP,
+        resetPasswordWithOTP,
         updateUser,
       }}
     >
