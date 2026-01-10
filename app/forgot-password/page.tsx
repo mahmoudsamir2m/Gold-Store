@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AiOutlineArrowLeft, AiOutlineMail } from "react-icons/ai";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,8 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordPage() {
-  const [emailSent, setEmailSent] = useState(false);
-  const { resetPassword, isLoading } = useAuth();
+  const router = useRouter();
+  const { sendOTP, isLoading } = useAuth();
 
   const {
     register,
@@ -34,63 +35,15 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      await resetPassword(data.email);
-      setEmailSent(true);
-      toast.success(
-        "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني"
-      );
+      await sendOTP(data.email);
+      toast.success("تم إرسال رمز التحقق إلى بريدك الإلكتروني");
+      // Store email in localStorage for OTP verification
+      localStorage.setItem("resetEmail", data.email);
+      router.push("/verify-otp");
     } catch (error) {
       toast.error("تعذر إرسال البريد. حاول مرة أخرى.");
     }
   };
-
-  if (emailSent) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-4">
-        <div className="w-full max-w-md text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-6">
-            <AiOutlineMail className="w-8 h-8 text-amber-600" />
-          </div>
-
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            تحقق من بريدك الإلكتروني
-          </h1>
-          <p className="text-gray-600 mb-8">
-            تم إرسال رابط إعادة تعيين كلمة المرور إلى{" "}
-            <span className="font-semibold text-gray-900">
-              {getValues("email")}
-            </span>
-          </p>
-
-          <div className="space-y-4">
-            <Button
-              onClick={() => setEmailSent(false)}
-              variant="outline"
-              className="w-full h-12 border-gray-200 hover:bg-gray-50"
-            >
-              تجربة بريد آخر
-            </Button>
-
-            <Link href="/login">
-              <Button className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-white font-semibold">
-                العودة لتسجيل الدخول
-              </Button>
-            </Link>
-          </div>
-
-          <p className="text-sm text-gray-500 mt-6">
-            لم يصلك البريد؟ تحقق من صندوق البريد المزعج أو{" "}
-            <button
-              onClick={() => onSubmit(getValues())}
-              className="text-amber-600 hover:text-amber-700 font-semibold"
-            >
-              أعد المحاولة
-            </button>
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
@@ -144,7 +97,7 @@ export default function ForgotPasswordPage() {
             className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-base"
             disabled={isLoading}
           >
-            {isLoading ? "جاري الإرسال..." : "إرسال رابط إعادة التعيين"}
+            {isLoading ? "جاري الإرسال..." : "إرسال رمز التحقق"}
           </Button>
         </form>
 

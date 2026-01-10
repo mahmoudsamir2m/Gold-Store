@@ -22,7 +22,7 @@ const signupSchema = z
     email: z.string().email("الرجاء إدخال بريد إلكتروني صحيح"),
     phone: z.string().min(10, "رقم الهاتف غير صحيح"),
     country: z.string().min(1, "الرجاء اختيار الدولة"),
-    password: z.string().min(6, "كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
+    password: z.string().min(8, "كلمة المرور يجب أن تكون على الأقل 8 أحرف"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
