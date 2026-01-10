@@ -36,16 +36,19 @@ const ITEMS_PER_PAGE = 8;
 export default function ProductsPageContent() {
   const { selectedCountry } = useCountry();
   const searchParams = useSearchParams();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
   const [filters, setFilters] = useState<FilterState>({
     metal: "",
     karat: "",
     type: "",
-    minPrice: 0,
+    minPrice: "",
     maxPrice: "",
     city: "",
     rating: 0,
@@ -76,7 +79,6 @@ export default function ProductsPageContent() {
         params.set("country", selectedCountry);
       }
 
-      // ❌ لا حاجة للـ headers أو التوكِن
       const res = await fetch(`/api/products?${params.toString()}`, {
         cache: "no-store",
       });
@@ -95,14 +97,44 @@ export default function ProductsPageContent() {
 
   return (
     <main dir="rtl" className="container mx-auto px-6 py-8">
-      {/* mobile filter */}
+      {/* زرار الفلاتر للموبايل */}
       <div className="flex lg:hidden mb-6">
-        <button className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg">
+        <button
+          onClick={() => setShowMobileFilters(true)}
+          className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg"
+        >
           <FaFilter /> تصفية المنتجات
         </button>
       </div>
 
+      {/* ===== Mobile Filters Drawer ===== */}
+      {showMobileFilters && (
+        <div className="fixed inset-0 z-50 bg-black/40 lg:hidden">
+          <div className="absolute right-0 top-0 h-full w-80 bg-white p-4 overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold">تصفية المنتجات</h3>
+              <button
+                onClick={() => setShowMobileFilters(false)}
+                className="text-red-600 text-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <ProductsSidebar filters={filters} onFilterChange={setFilters} />
+
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="mt-4 w-full bg-yellow-500 text-white py-2 rounded"
+            >
+              تطبيق الفلاتر
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-6">
+        {/* Sidebar للـ Desktop */}
         <div className="hidden lg:block w-72 shrink-0">
           <ProductsSidebar filters={filters} onFilterChange={setFilters} />
         </div>
@@ -120,6 +152,7 @@ export default function ProductsPageContent() {
               </button>
             </div>
           )}
+
           {loading ? (
             <p className="text-center py-10">جاري التحميل...</p>
           ) : products.length === 0 ? (
@@ -132,7 +165,6 @@ export default function ProductsPageContent() {
                 ))}
               </div>
 
-              {/* pagination */}
               {totalPages > 1 && (
                 <div className="flex justify-center mt-10 gap-2">
                   {Array.from({ length: totalPages }).map((_, i) => (
