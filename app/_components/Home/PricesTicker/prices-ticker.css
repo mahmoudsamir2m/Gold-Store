@@ -2,7 +2,7 @@
   display: inline-flex;
   gap: 2rem;
   white-space: nowrap;
-  animation: tickerMove 100s linear infinite;
+  animation: tickerMove 85s linear infinite;
   min-width: fit-content;
 }
 

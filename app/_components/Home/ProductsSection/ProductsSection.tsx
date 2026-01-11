@@ -43,7 +43,7 @@ export default function ProductsSection() {
   }, []);
 
   return (
-    <ReusableSliderSection title="منتجات مختارة" link="/all-products">
+    <ReusableSliderSection title="منتجات مختارة" link="/products">
       {loading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={index}>
