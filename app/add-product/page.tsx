@@ -106,6 +106,13 @@ export default function AddProductPage() {
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
+    defaultValues: {
+      category: "jewelry", 
+      type: "Necklaces", 
+      metal: "gold",
+      karat: "21",
+      country: "مصر",
+    },
   });
 
   // Fetch user data
@@ -277,7 +284,7 @@ export default function AddProductPage() {
   };
 
   return (
-    <div dir="rtl" className="max-w-2xl mx-auto p-4 md:p-6 my-9">
+    <div dir="rtl" className="max-w-2xl mx-auto p-4 md:p-6 my-10">
       {loading ? (
         <div className="text-center py-10">جاري التحميل...</div>
       ) : (
