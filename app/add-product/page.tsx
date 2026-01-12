@@ -277,7 +277,7 @@ export default function AddProductPage() {
   };
 
   return (
-    <div dir="rtl" className="max-w-2xl mx-auto p-4 md:p-6 my-10">
+    <div dir="rtl" className="max-w-2xl mx-auto p-4 md:p-6 my-9">
       {loading ? (
         <div className="text-center py-10">جاري التحميل...</div>
       ) : (
