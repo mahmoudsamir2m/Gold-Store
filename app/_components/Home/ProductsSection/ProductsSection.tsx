@@ -12,7 +12,7 @@ type Product = {
   title: string;
   images: string[];
   rating: number;
-  karat: number;
+  karat?: string;
   weight?: number;
 };
 

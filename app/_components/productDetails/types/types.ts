@@ -8,8 +8,6 @@ export type Product = {
   product_type: string;
   karat: string;
   weight: string;
-  price: number; 
-  originalPrice?: number; 
   label: string;
   images: string[];
   description: string;

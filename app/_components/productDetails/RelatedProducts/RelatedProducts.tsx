@@ -13,7 +13,7 @@ interface Product {
   category: string;
   price: number;
   originalPrice?: number;
-  karat: number;
+  karat?: string;
   rating: number;
   images: string[];
   weight?: number;
