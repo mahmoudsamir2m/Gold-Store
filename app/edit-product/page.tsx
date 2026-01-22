@@ -105,7 +105,6 @@ function EditProductForm() {
     type: "Bars",
     metal: "gold",
     karat: "24",
-    price: 0,
     weight: 0,
     description: "",
     images: [],
@@ -187,7 +186,6 @@ function EditProductForm() {
   const selectedCategory = watch("category");
   const selectedMetal = watch("metal");
   const selectedCountry = watch("country") || "مصر";
-  const currency = CURRENCY_MAP[selectedCountry] || "جنيه";
   const subTypes = TYPES[selectedCategory] || [];
   const karatOptions = selectedMetal === "gold" ? GOLD_KARATS : SILVER_KARATS;
 
@@ -280,7 +278,6 @@ function EditProductForm() {
         category: data.category,
         product_type: data.type,
         karat: data.karat,
-        price: data.price,
         weight: data.weight,
         description: data.description,
         contact_name: data.name,
