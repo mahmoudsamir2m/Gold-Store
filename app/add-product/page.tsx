@@ -158,7 +158,6 @@ export default function AddProductPage() {
   const selectedCategory = watch("category");
   const selectedMetal = watch("metal");
   const selectedCountry = watch("country") || "مصر";
-  const currency = CURRENCY_MAP[selectedCountry] || "جنيه";
   const subTypes = TYPES[selectedCategory] || [];
   const karatOptions = selectedMetal === "gold" ? GOLD_KARATS : SILVER_KARATS;
 
@@ -244,7 +243,6 @@ export default function AddProductPage() {
         category: data.category,
         product_type: data.type,
         karat: data.karat,
-        price: data.price,
         description: data.description,
         contact_name: data.name,
         contact_phone: data.phone,
