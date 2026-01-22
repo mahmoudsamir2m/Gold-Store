@@ -34,7 +34,6 @@ export const productFormSchema = z.object({
   type: z.enum(allowedTypes, { message: "النوع غير صالح" }),
   metal: z.enum(["gold", "silver"], { message: "المعدن غير صالح" }),
   karat: z.string().min(1, "العيار مطلوب"),
-  price: z.number().positive("السعر يجب أن يكون أكبر من 0"),
   weight: z.number().positive("الوزن يجب أن يكون أكبر من 0"),
   description: z.string().min(10, "الوصف قصير جدًا"),
   images: z.array(fileSchema).min(1, "يجب اختيار صورة واحدة على الأقل"),
@@ -52,7 +51,6 @@ export const editProductFormSchema = z
     type: z.enum(allowedTypes, { message: "النوع غير صالح" }),
     metal: z.enum(["gold", "silver"], { message: "المعدن غير صالح" }),
     karat: z.string().min(1, "العيار مطلوب"),
-    price: z.number().positive("السعر يجب أن يكون أكبر من 0"),
     weight: z.number().positive("الوزن يجب أن يكون أكبر من 0"),
     description: z.string().min(10, "الوصف قصير جدًا"),
     images: z.array(fileSchema).min(0), // Allow 0 images for editing

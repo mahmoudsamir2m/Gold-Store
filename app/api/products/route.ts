@@ -16,8 +16,6 @@ export async function GET(request: Request) {
   const search = searchParams.get("search") || "";
   const city = searchParams.get("city") || "";
 
-  const min_price_raw = searchParams.get("min_price");
-  const max_price_raw = searchParams.get("max_price");
 
   try {
     const PRODUCTS_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
@@ -31,8 +29,6 @@ export async function GET(request: Request) {
     if (category) apiUrl.searchParams.set("category", category);
     if (search) apiUrl.searchParams.set("search", search);
     if (city) apiUrl.searchParams.set("city", city);
-    if (min_price_raw) apiUrl.searchParams.set("min_price", min_price_raw);
-    if (max_price_raw) apiUrl.searchParams.set("max_price", max_price_raw);
 
     // ❌ لا حاجة ل(headers Authorization لأن الـ API لا يتطلب مصادقة
     const res = await fetch(apiUrl.toString(), {
@@ -56,8 +52,6 @@ export async function GET(request: Request) {
       category: item.category,
       metal: item.metal,
       karat: item.karat,
-      price: parseFloat(item.price) || 0,
-      originalPrice: parseFloat(item.original_price) || undefined,
       rating: item.average_rating || 0,
       city: item.city || "",
       images: Array.isArray(item.images)
