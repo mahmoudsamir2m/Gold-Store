@@ -69,7 +69,6 @@ export default function ProductDetailPage() {
           product_type: decodeUnicode(externalProduct.product_type),
           karat: externalProduct.karat,
           weight: externalProduct.weight,
-          price: parseFloat(externalProduct.price) || 0,
           label: decodeUnicode(externalProduct.label),
           images: Array.isArray(externalProduct.images)
             ? externalProduct.images.map((img: string) => img.trim())
