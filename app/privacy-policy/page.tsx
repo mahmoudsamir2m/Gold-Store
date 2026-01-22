@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-10">جارٍ التحميل...</div>;
+    return <div className="text-center py-10 min-h-screen flex items-center justify-center"> <span>جارٍ التحميل...</span></div>;
   }
 
   return (

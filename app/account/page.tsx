@@ -225,7 +225,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto p-8 text-center min-h-screen flex items-center justify-center" dir="rtl">
-       <span className="text-2xl font-bold">
+       <span>
         جاري التحميل...
       </span>
       </div>
