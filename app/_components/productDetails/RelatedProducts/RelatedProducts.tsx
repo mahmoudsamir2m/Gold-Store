@@ -13,6 +13,7 @@ interface Product {
   category: string;
   price: number;
   originalPrice?: number;
+  karat: number;
   rating: number;
   images: string[];
   weight?: number;
@@ -58,7 +59,7 @@ export default function RelatedProducts({
   if (loading || relatedProducts.length === 0) return null;
 
   return (
-    <ReusableSliderSection title="منتجات ذات صلة" link="/all-products">
+    <ReusableSliderSection title="اعلانات ذات صلة" link="/all-products">
       {relatedProducts.map((product) => (
         <SwiperSlide key={product.id}>
           <Card
@@ -66,8 +67,7 @@ export default function RelatedProducts({
             images={product.images}
             title={product.title}
             rating={product.rating}
-            price={product.price}
-            originalPrice={product.originalPrice}
+            karat={product.karat}
             weight={product.weight}
             width="w-70 lg:w-60"
           />

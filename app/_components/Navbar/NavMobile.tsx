@@ -24,7 +24,7 @@ export default function NavMobile() {
           <NavItem
             href="/products"
             icon={FaShoppingBag}
-            label="المنتجات"
+            label="الاعلانات"
             pathName={pathName}
           />
           <NavItem

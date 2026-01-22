@@ -40,7 +40,7 @@ export default function ProductInfo({ product }: { product: Product }) {
 
       <div className="text-right space-y-4 mt-6">
         <div>
-          <h3 className="font-semibold text-lg">وصف المنتج</h3>
+          <h3 className="font-semibold text-lg">وصف الاعلان</h3>
           <p className="text-sm text-gray-700 leading-relaxed">
             {product.description}
           </p>

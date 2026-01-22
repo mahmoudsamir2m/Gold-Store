@@ -11,7 +11,9 @@ export default function LayoutWrapper({ children }: { children: ReactNode }) {
   const hideLayout =
     pathname === "/login" ||
     pathname === "/signup" ||
-    pathname === "/forgot-password";
+    pathname === "/forgot-password"||
+    pathname === "/reset-password"||
+    pathname === "/verify-otp";
 
   return (
     <>

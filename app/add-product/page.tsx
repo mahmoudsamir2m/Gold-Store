@@ -291,7 +291,7 @@ export default function AddProductPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="text-2xl text-center text-yellow-600">
-              إضافة منتج جديد
+              إضافة اعلان جديد
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -459,19 +459,6 @@ export default function AddProductPage() {
                   {errors.karat && (
                     <p className="text-red-500 text-sm">
                       {errors.karat.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label className="block mb-1">السعر ({currency})</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    {...register("price", { valueAsNumber: true })}
-                  />
-                  {errors.price && (
-                    <p className="text-red-500 text-sm">
-                      {errors.price.message}
                     </p>
                   )}
                 </div>

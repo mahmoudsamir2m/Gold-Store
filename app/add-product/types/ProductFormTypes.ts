@@ -20,7 +20,6 @@ export interface ProductFormData {
   type: TypeType;
   metal: MetalType;
   karat: KaratType;
-  price: number;
   weight: number;
   description: string;
   images: File[];

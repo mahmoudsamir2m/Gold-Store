@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { HiOutlineShieldCheck } from "react-icons/hi";
 import {
   RiInstagramLine,
   RiTwitterLine,
@@ -67,49 +68,21 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Social Icons */}
-          <div className="lg:col-span-1 flex flex-col justify-start">
-            <h3 className="font-semibold text-lg mb-4">تابعنا</h3>
+          {/* privacy-policy */}
+          <Link
+            href="/privacy-policy"
+            className="lg:col-span-1 flex flex-col justify-start"
+          >
+            <h3 className="font-semibold text-lg mb-4"> سياسة الخصوصية</h3>
             <div className="flex items-center gap-4 text-yellow-400 text-2xl">
-              <Link
-                href="https://www.facebook.com/share/17PdGTGvxB/"
-                aria-label="Facebook"
-                target="_blank"
-                className="hover:opacity-80"
-              >
-                <RiFacebookLine />
-              </Link>
-              <Link
-                href="#"
-                aria-label="Instagram"
-                target="_blank"
-                className="hover:opacity-80"
-              >
-                <RiInstagramLine />
-              </Link>
-              <Link
-                href="#"
-                aria-label="Twitter"
-                target="_blank"
-                className="hover:opacity-80"
-              >
-                <RiTwitterLine />
-              </Link>
-              <Link
-                href="#"
-                aria-label="LinkedIn"
-                target="_blank"
-                className="hover:opacity-80"
-              >
-                <RiLinkedinLine />
-              </Link>
+              <HiOutlineShieldCheck className="w-4 h-4" />
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* bottom line */}
         <div className="border-t mb-10 md:mb-0 border-gray-600 mt-10 pt-4 text-center text-gray-400 text-sm">
-          © 2025 دهبنا. جميع الحقوق محفوظة. يمنع النسخ أو التوزيع دون إذن.
+          © 2025 TrueCode. جميع الحقوق محفوظة. يمنع النسخ أو التوزيع دون إذن.
         </div>
       </div>
     </footer>

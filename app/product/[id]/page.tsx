@@ -190,7 +190,7 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-xl">جارٍ تحميل تفاصيل المنتج...</p>
+        <p className="text-xl">جارٍ تحميل تفاصيل الاعلان...</p>
       </div>
     );
   }
@@ -200,10 +200,10 @@ export default function ProductDetailPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center p-8">
           <h1 className="text-3xl font-bold text-red-600 mb-4">
-            المنتج غير موجود
+            الاعلان غير موجود
           </h1>
           <p className="text-gray-600 mb-6">
-            نأسف، لكننا لم نعثر على هذا المنتج.
+            نأسف، لكننا لم نعثر على هذا الاعلان.
           </p>
           <Link
             href="/"

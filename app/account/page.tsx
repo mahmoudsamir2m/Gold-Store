@@ -224,8 +224,10 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto p-8 text-center" dir="rtl">
+      <div className="max-w-6xl mx-auto p-8 text-center min-h-screen flex items-center justify-center" dir="rtl">
+       <span className="text-2xl font-bold">
         جاري التحميل...
+      </span>
       </div>
     );
   }
@@ -329,19 +331,19 @@ export default function ProfilePage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-yellow-700">
-            المنتجات المعروضة للبيع
+            الاعلانات المعروضة للبيع
           </CardTitle>
           <Link
             href="/add-product"
             className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700"
           >
-            إضافة منتج جديد
+            إضافة اعلان جديد
           </Link>
         </CardHeader>
         <CardContent className="space-y-3">
           {sellingItems.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">
-              لا توجد منتجات حالياً
+              لا توجد اعلانات حالياً
             </p>
           ) : (
             sellingItems.map((item) => (
@@ -351,9 +353,6 @@ export default function ProfilePage() {
               >
                 <div className="flex-1">
                   <p className="font-medium">{item.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {item.price} ج.م
-                  </p>
                 </div>
                 <div className="flex gap-2">
                   <Button

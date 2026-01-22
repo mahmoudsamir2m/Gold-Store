@@ -3,8 +3,7 @@ export interface ProductCardProps {
   images: string[];
   title: string;
   rating: number;
-  price: number;
-  originalPrice?: number;
+  karat: number;
   width: string;
   label?: string;
   country?: string;

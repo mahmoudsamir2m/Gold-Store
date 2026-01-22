@@ -330,7 +330,7 @@ function EditProductForm() {
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl text-center text-yellow-600">
-            تعديل المنتج
+            تعديل الاعلان
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -420,7 +420,7 @@ function EditProductForm() {
             {/* العنوان */}
             <div>
               <Label className="flex items-center gap-2 mb-1">
-                <FiTag className="text-yellow-500" /> العنوان
+                <FiTag className="text-yellow-500" /> عنوان الاعلان
               </Label>
               <Input {...register("title")} />
               {errors.title && (
@@ -493,17 +493,6 @@ function EditProductForm() {
                 </select>
                 {errors.karat && (
                   <p className="text-red-500 text-sm">{errors.karat.message}</p>
-                )}
-              </div>
-              <div>
-                <Label className="block mb-1">السعر ({currency})</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  {...register("price", { valueAsNumber: true })}
-                />
-                {errors.price && (
-                  <p className="text-red-500 text-sm">{errors.price.message}</p>
                 )}
               </div>
               <div>

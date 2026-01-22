@@ -67,34 +67,46 @@ export default function ProductsPageContent() {
     const fetchProducts = async () => {
       setLoading(true);
 
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        per_page: ITEMS_PER_PAGE.toString(),
-      });
+      try {
+        const params = new URLSearchParams({
+          page: currentPage.toString(),
+          per_page: ITEMS_PER_PAGE.toString(),
+        });
 
-      if (filters.metal) params.set("metal", filters.metal);
-      if (filters.karat) params.set("karat", filters.karat);
-      if (filters.type) params.set("product_type", filters.type);
-      if (typeof filters.minPrice === "number" && filters.minPrice > 0)
-        params.set("min_price", filters.minPrice.toString());
-      if (typeof filters.maxPrice === "number" && filters.maxPrice > 0)
-        params.set("max_price", filters.maxPrice.toString());
-      if (filters.city) params.set("city", filters.city);
-      if (filters.search) params.set("search", filters.search);
+        if (filters.metal) params.set("metal", filters.metal);
+        if (filters.karat) params.set("karat", filters.karat);
+        if (filters.type) params.set("product_type", filters.type);
 
-      if (selectedCountry !== "all") {
-        params.set("country", selectedCountry);
+        if (typeof filters.minPrice === "number" && filters.minPrice > 0) {
+          params.set("min_price", filters.minPrice.toString());
+        }
+
+        if (typeof filters.maxPrice === "number" && filters.maxPrice > 0) {
+          params.set("max_price", filters.maxPrice.toString());
+        }
+
+        if (filters.city) params.set("city", filters.city);
+        if (filters.search) params.set("search", filters.search);
+
+        if (selectedCountry !== "all") {
+          params.set("country", selectedCountry);
+        }
+
+        const res = await fetch(`/api/products?${params.toString()}`, {
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+
+        setProducts(data.products || []);
+        setTotal(data.total || 0);
+      } catch (error) {
+        console.error("Fetch Products Error:", error);
+        setProducts([]);
+        setTotal(0);
+      } finally {
+        setLoading(false);
       }
-
-      const res = await fetch(`/api/products?${params.toString()}`, {
-        cache: "no-store",
-      });
-
-      const data = await res.json();
-
-      setProducts(data.products || []);
-      setTotal(data.total || 0);
-      setLoading(false);
     };
 
     fetchProducts();
@@ -120,6 +132,7 @@ export default function ProductsPageContent() {
           <div className="absolute right-0 top-0 h-full w-80 bg-white p-4 overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold">تصفية المنتجات</h3>
+
               <button
                 onClick={() => setShowMobileFilters(false)}
                 className="text-red-600 text-lg"
@@ -128,7 +141,12 @@ export default function ProductsPageContent() {
               </button>
             </div>
 
-            <ProductsSidebar filters={filters} onFilterChange={setFilters} />
+            <ProductsSidebar
+              filters={filters}
+              onFilterChange={setFilters}
+              userCountry={selectedCountry}
+              isSearching={loading}
+            />
 
             <button
               onClick={() => setShowMobileFilters(false)}
@@ -143,7 +161,12 @@ export default function ProductsPageContent() {
       <div className="flex gap-6">
         {/* Sidebar للـ Desktop */}
         <div className="hidden lg:block w-72 shrink-0">
-          <ProductsSidebar filters={filters} onFilterChange={setFilters} />
+          <ProductsSidebar
+            filters={filters}
+            onFilterChange={setFilters}
+            userCountry={selectedCountry}
+            isSearching={loading}
+          />
         </div>
 
         <div className="flex-1">
@@ -151,8 +174,11 @@ export default function ProductsPageContent() {
             <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-between">
               <div>
                 <span className="text-sm">نتائج البحث عن: </span>
-                <span className="font-bold">&ldquo;{filters.search}&rdquo;</span>
+                <span className="font-bold">
+                  &ldquo;{filters.search}&rdquo;
+                </span>
               </div>
+
               <button
                 onClick={() => setFilters((prev) => ({ ...prev, search: "" }))}
                 className="text-xs text-red-600 hover:underline px-2"
@@ -180,9 +206,12 @@ export default function ProductsPageContent() {
                     <button
                       key={i}
                       onClick={() => setCurrentPage(i + 1)}
-                      className={`px-3 py-1 border rounded ${
-                        currentPage === i + 1 ? "bg-yellow-500 text-white" : ""
-                      }`}
+                      disabled={loading}
+                      className={`px-3 py-1 border rounded transition ${
+                        currentPage === i + 1
+                          ? "bg-yellow-500 text-white"
+                          : "bg-white"
+                      } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       {i + 1}
                     </button>

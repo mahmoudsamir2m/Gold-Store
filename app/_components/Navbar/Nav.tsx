@@ -12,7 +12,7 @@ import SearchBar from "./SubComponents/SearchBar";
 
 const navLinks: NavLinkItem[] = [
   { name: "الرئيسية", href: "/" },
-  { name: "المنتجات", href: "/products" },
+  { name: "الاعلانات", href: "/products" },
   { name: "اسعار الدهب والفضة", href: "/gold-silver" },
 ];
 

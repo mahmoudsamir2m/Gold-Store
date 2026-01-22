@@ -16,12 +16,11 @@ export default function Card({
   images,
   title,
   rating,
-  price,
-  originalPrice,
+  karat,
+  weight,
   width,
   label,
   country,
-  weight,
 }: ProductCardProps) {
   const currency = country ? CURRENCY_MAP[country] || "$" : "$";
 
@@ -69,14 +68,8 @@ export default function Card({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold text-gray-900">
-              {price} {currency}
+              العيار:{karat}
             </span>
-            {/* Original price */}
-            {originalPrice && (
-              <span className="text-sm text-gray-500 line-through">
-                {originalPrice} {currency}
-              </span>
-            )}
           </div>
         </div>
 

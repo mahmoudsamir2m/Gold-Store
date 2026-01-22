@@ -12,8 +12,7 @@ type Product = {
   title: string;
   images: string[];
   rating: number;
-  price: number;
-  originalPrice?: number;
+  karat: number;
   weight?: number;
 };
 
@@ -43,7 +42,7 @@ export default function ProductsSection() {
   }, []);
 
   return (
-    <ReusableSliderSection title="منتجات مختارة" link="/products">
+    <ReusableSliderSection title="اعلانات مختارة" link="/products">
       {loading
         ? Array.from({ length: 6 }).map((_, index) => (
             <SwiperSlide key={index}>
@@ -57,8 +56,7 @@ export default function ProductsSection() {
                 images={product.images}
                 title={product.title}
                 rating={product.rating}
-                price={product.price}
-                originalPrice={product.originalPrice}
+                karat={product.karat}
                 width="w-82"
                 weight={product.weight}
               />

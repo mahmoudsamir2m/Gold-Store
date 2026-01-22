@@ -18,6 +18,7 @@ interface Props {
   filters: Filters;
   onFilterChange: React.Dispatch<React.SetStateAction<Filters>>;
   userCountry?: string;
+  isSearching: boolean;
 }
 
 interface MetalButton {
@@ -29,6 +30,7 @@ export default function ProductsSidebar({
   filters,
   onFilterChange,
   userCountry,
+  isSearching,
 }: Props) {
   const [openSections, setOpenSections] = useState({
     metal: true,
@@ -37,17 +39,21 @@ export default function ProductsSidebar({
     price: false,
     city: false,
   });
+
   const [searchInput, setSearchInput] = useState("");
 
   const toggleSection = (key: keyof typeof openSections) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const handleSearchClick = () => {
+    if (isSearching) return;
     onFilterChange((prev) => ({ ...prev, search: searchInput }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (isSearching) return;
+
+    if (e.key === "Enter") {
       e.preventDefault();
       handleSearchClick();
     }
@@ -127,21 +133,31 @@ export default function ProductsSidebar({
       {/* ===== البحث ===== */}
       <div>
         <h3 className="font-semibold mb-2">البحث</h3>
+
         <div className="relative flex gap-2">
           <input
             type="text"
             placeholder="ابحث عن منتج..."
-            className="flex-1 border rounded h-9 px-2"
+            className={`flex-1 border rounded h-9 px-2 ${
+              isSearching ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
+            disabled={isSearching}
           />
+
           <button
             type="button"
             onClick={handleSearchClick}
-            className="bg-yellow-500 text-white px-3 rounded hover:bg-yellow-600"
+            disabled={isSearching}
+            className={`text-white px-3 rounded transition ${
+              isSearching
+                ? "bg-yellow-300 cursor-not-allowed"
+                : "bg-yellow-500 hover:bg-yellow-600"
+            }`}
           >
-            <FaSearch />
+            {isSearching ? "..." : <FaSearch />}
           </button>
         </div>
       </div>
@@ -149,6 +165,7 @@ export default function ProductsSidebar({
       {/* ===== المعدن ===== */}
       <div>
         <h3 className="font-semibold mb-2">المعدن</h3>
+
         <div className="flex gap-2">
           {(
             [
@@ -162,11 +179,12 @@ export default function ProductsSidebar({
               onClick={() =>
                 onFilterChange({ ...filters, metal: b.v, karat: "" })
               }
-              className={`flex-1 py-2 rounded ${
+              disabled={isSearching}
+              className={`flex-1 py-2 rounded transition ${
                 filters.metal === b.v
                   ? "bg-yellow-500 text-white"
                   : "bg-gray-100"
-              }`}
+              } ${isSearching ? "opacity-60 cursor-not-allowed" : ""}`}
             >
               {b.l}
             </button>
@@ -190,6 +208,7 @@ export default function ProductsSidebar({
               <input
                 type="radio"
                 checked={filters.type === "jewelry"}
+                disabled={isSearching}
                 onChange={() =>
                   onFilterChange({ ...filters, type: "jewelry", karat: "" })
                 }
@@ -202,6 +221,7 @@ export default function ProductsSidebar({
               <input
                 type="radio"
                 checked={filters.type === "bullion"}
+                disabled={isSearching}
                 onChange={() => onFilterChange({ ...filters, type: "bullion" })}
                 className="accent-yellow-500"
               />
@@ -228,6 +248,7 @@ export default function ProductsSidebar({
                 <input
                   type="radio"
                   checked={filters.karat === ""}
+                  disabled={isSearching}
                   onChange={() => onFilterChange({ ...filters, karat: "" })}
                   className="accent-yellow-500"
                 />
@@ -240,7 +261,10 @@ export default function ProductsSidebar({
                 <input
                   type="radio"
                   checked={filters.karat === k.value}
-                  disabled={filters.type === "bullion" && k.value !== "24"}
+                  disabled={
+                    isSearching ||
+                    (filters.type === "bullion" && k.value !== "24")
+                  }
                   onChange={() =>
                     onFilterChange({ ...filters, karat: k.value })
                   }
@@ -253,73 +277,19 @@ export default function ProductsSidebar({
         )}
       </div>
 
-      {/* ===== السعر ===== */}
-      <div>
-        <button
-          onClick={() => toggleSection("price")}
-          className="flex justify-between w-full font-semibold py-2"
-        >
-          <span>السعر</span>
-          <span>{openSections.price ? "−" : "+"}</span>
-        </button>
-
-        {openSections.price && (
-          <div className="space-y-2">
-            <div className="flex gap-2">
-              <input
-                type="number"
-                placeholder="من"
-                className="w-1/2 border px-2 h-8 rounded"
-                value={filters.minPrice}
-                onChange={(e) =>
-                  onFilterChange({
-                    ...filters,
-                    minPrice:
-                      e.target.value === "" ? "" : Number(e.target.value),
-                  })
-                }
-              />
-
-              <input
-                type="number"
-                placeholder="إلى"
-                className="w-1/2 border px-2 h-8 rounded"
-                value={filters.maxPrice}
-                onChange={(e) =>
-                  onFilterChange({
-                    ...filters,
-                    maxPrice:
-                      e.target.value === "" ? "" : Number(e.target.value),
-                  })
-                }
-              />
-            </div>
-
-            <button
-              onClick={() =>
-                onFilterChange({
-                  ...filters,
-                  minPrice: "",
-                  maxPrice: "",
-                })
-              }
-              className="text-xs text-gray-500 hover:text-gray-700"
-            >
-              إعادة تعيين
-            </button>
-          </div>
-        )}
-      </div>
-
       {/* ===== المدينة ===== */}
       <div>
         <h3 className="font-semibold mb-2">المدينة</h3>
+
         <div className="relative">
           <input
             type="text"
             placeholder="ابحث عن مدينة..."
-            className="w-full border rounded h-9 px-2"
+            className={`w-full border rounded h-9 px-2 ${
+              isSearching ? "bg-gray-100 cursor-not-allowed" : ""
+            }`}
             value={filters.city}
+            disabled={isSearching}
             onChange={(e) =>
               onFilterChange((prev) => ({ ...prev, city: e.target.value }))
             }
