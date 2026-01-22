@@ -30,14 +30,6 @@ export default function ProductInfo({ product }: { product: Product }) {
           ({product.reviewsCount} تقييم)
         </span>
       </div>
-
-      {/* ✅ السعر فقط — بدون originalPrice */}
-      <div className="flex items-center justify-end gap-3">
-        <span className="text-3xl font-bold text-gray-900">
-          {product.price.toFixed(2)} ج.م
-        </span>
-      </div>
-
       <div className="text-right space-y-4 mt-6">
         <div>
           <h3 className="font-semibold text-lg">وصف الاعلان</h3>
