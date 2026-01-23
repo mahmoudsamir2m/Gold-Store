@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 export default function AboutSection({
   title = "إتقان فن الذهب",
   description = "نصنع مجوهرات ذهبية خالدة بالدقة والشغف والحرفية التي تتوارثها الأجيال.",
-  link = "/about",
+  link = "",
   buttonText = "المزيد عنا",
   imageSrc = "",
 }: AboutSectionProps) {
@@ -48,6 +48,14 @@ export default function AboutSection({
 
           <Link
             href={link}
+            target={
+              link.includes("https://www.facebook.com") ? "_blank" : undefined
+            }
+            rel={
+              link.includes("https://www.facebook.com")
+                ? "noopener noreferrer"
+                : undefined
+            }
             className="bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg inline-flex items-center gap-2 ml-auto group"
           >
             {buttonText}

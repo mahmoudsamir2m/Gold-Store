@@ -20,9 +20,8 @@ export default function Card({
   weight,
   width,
   label,
-  country,
 }: ProductCardProps) {
-  const currency = country ? CURRENCY_MAP[country] || "$" : "$";
+
 
   return (
     <div
@@ -54,7 +53,7 @@ export default function Card({
       {/* Content section */}
       <div className="p-4">
         {/* Product title */}
-        <h3 className="text-lg min-h-15 line-clamp-2 font-semibold text-gray-800 mb-1">
+        <h3 className="text-lg min-h-13 line-clamp-2 font-semibold text-gray-800 mb-1">
           {title}
         </h3>
 
@@ -64,21 +63,21 @@ export default function Card({
           <span className="text-sm text-gray-600">{rating}</span>
         </div>
 
-        {/* Price section with cart icon */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">
-              العيار:{karat}
-            </span>
+          {/* karat section */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-base font-semibold  text-gray-700">
+                العيار:{karat}
+              </span>
+            </div>
+          </div>
+
+          {/* Weight */}
+          <div className="mb-3">
+            <span className="text-[12px] text-gray-600">الوزن: {weight} جرام</span>
           </div>
         </div>
-
-        {/* Weight */}
-        {weight && (
-          <div className="mb-3">
-            <span className="text-sm text-gray-600">الوزن: {weight} جرام</span>
-          </div>
-        )}
 
         {/* View Details Button */}
         <Link

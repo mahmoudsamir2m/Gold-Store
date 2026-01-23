@@ -6,6 +6,5 @@ export interface ProductCardProps {
   karat?: string;
   width: string;
   label?: string;
-  country?: string;
   weight?: number;
 }

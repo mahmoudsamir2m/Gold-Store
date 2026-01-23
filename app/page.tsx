@@ -15,8 +15,8 @@ export default function Home() {
       <AboutSection
         title="إتقان فن الذهب"
         description="نصنع مجوهرات ذهبية خالدة بالدقة والشغف والحرفية التي تتوارثها الأجيال."
-        link="/about"
-        buttonText="المزيد عنا"
+        link="https://www.facebook.com/share/17PdGTGvxB/"
+        buttonText="تباعنا علي فيسبوك"
         imageSrc=""
       />
       {/* <CategoriesSection /> */}
@@ -24,7 +24,7 @@ export default function Home() {
         title="استثمر في الفخامة... واربح المفاجأة!"
         description="مع كل شراء ذهب، افتح بابًا لفرصة فريدة للفوز بهدية استثنائية تليق بذوقك الرفيع."
         link="/products"
-        buttonText="عرض المنتجات"
+        buttonText="عرض الاعلانات"
         imageSrc="/Golden-shopping-cart.png"
       />
       <BlogSection />

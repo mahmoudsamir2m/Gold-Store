@@ -52,6 +52,7 @@ export async function GET(request: Request) {
       category: item.category,
       metal: item.metal,
       karat: item.karat,
+      weight: item.weight || 0,
       rating: item.average_rating || 0,
       city: item.city || "",
       images: Array.isArray(item.images)

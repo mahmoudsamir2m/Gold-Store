@@ -62,6 +62,7 @@ export default function ProductsSection() {
               />
             </SwiperSlide>
           ))}
+          
     </ReusableSliderSection>
   );
 }

@@ -73,9 +73,9 @@ export default function Footer() {
             href="/privacy-policy"
             className="lg:col-span-1 flex flex-col justify-start"
           >
-            <h3 className="font-semibold text-lg mb-4"> سياسة الخصوصية</h3>
-            <div className="flex items-center gap-4 text-yellow-400 text-2xl">
-              <HiOutlineShieldCheck className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-yellow-400 text-2xl hover:text-yellow-600">
+              <HiOutlineShieldCheck className="w-8 h-8" />
+              <h3 className="font-semibold text-lg mb-1">سياسة الخصوصية</h3>
             </div>
           </Link>
         </div>
