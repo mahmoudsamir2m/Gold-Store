@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { FaGlobe } from "react-icons/fa";
 import { useCountry } from "@/contexts/CountryContext";
 
 const countries = [
@@ -39,7 +38,6 @@ export default function CountrySelector() {
         aria-haspopup="true"
         aria-expanded={isCountryOpen}
       >
-        <FaGlobe className="text-base lg:text-lg xl:text-lg" />
         <span>{currentCountry.flag} {currentCountry.name}</span>
       </button>
       {isCountryOpen && (

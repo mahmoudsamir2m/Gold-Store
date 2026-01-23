@@ -381,7 +381,7 @@ export default function AddProductPage() {
               {/* العنوان */}
               <div>
                 <Label className="flex items-center gap-2 mb-1">
-                  <FiTag className="text-yellow-500" /> العنوان
+                  <FiTag className="text-yellow-500" /> عنوان الإعلان
                 </Label>
                 <Input {...register("title")} />
                 {errors.title && (
