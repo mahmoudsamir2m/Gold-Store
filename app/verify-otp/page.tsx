@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -24,13 +24,8 @@ type OTPFormData = z.infer<typeof otpSchema>;
 
 export default function VerifyOTPPage() {
   const router = useRouter();
-  const { verifyOTP, isLoading, updateUser, sendOTP, user } = useAuth();
+  const { verifyOTP, isLoading, updateUser, sendOTP} = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [user, router]);
 
   const email = useMemo(() => {
     if (typeof window !== "undefined") {
