@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -25,19 +24,62 @@ type OTPFormData = z.infer<typeof otpSchema>;
 
 export default function VerifyOTPPage() {
   const router = useRouter();
-  const { verifyOTP, isLoading } = useAuth();
-  const [email, setEmail] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("resetEmail") || "";
-    }
-    return "";
-  });
+  const { verifyOTP, isLoading, updateUser, sendOTP, user } = useAuth();
 
   useEffect(() => {
-    if (!email) {
-      router.push("/forgot-password");
+    if (user) {
+      router.push("/");
     }
-  }, [email, router]);
+  }, [user, router]);
+
+  const email = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return (
+        localStorage.getItem("loginEmail") ||
+        localStorage.getItem("signupEmail") ||
+        localStorage.getItem("resetEmail") ||
+        ""
+      );
+    }
+    return "";
+  }, []);
+
+  const otpType = useMemo(() => {
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("loginEmail")) return "login";
+      if (localStorage.getItem("signupEmail")) return "signup";
+      if (localStorage.getItem("resetEmail")) return "forgot-password";
+    }
+    return "";
+  }, []);
+
+  // تحديد صفحة العودة حسب نوع العملية
+  const getBackUrl = () => {
+    switch (otpType) {
+      case "forgot-password":
+        return "/forgot-password";
+      case "login":
+        return "/login";
+      case "signup":
+        return "/signup";
+      default:
+        return "/login"; // افتراضي
+    }
+  };
+
+  // تحديد نص زر العودة حسب نوع العملية
+  const getBackText = () => {
+    switch (otpType) {
+      case "forgot-password":
+        return "العودة إلى نسيان كلمة المرور";
+      case "login":
+        return "العودة إلى تسجيل الدخول";
+      case "signup":
+        return "العودة إلى التسجيل";
+      default:
+        return "العودة";
+    }
+  };
 
   const {
     register,
@@ -49,15 +91,30 @@ export default function VerifyOTPPage() {
 
   const onSubmit = async (data: OTPFormData) => {
     try {
-      const isValid = await verifyOTP(email, data.otp);
+      const isValid = await verifyOTP(email, data.otp, otpType);
       if (isValid) {
-        toast.success("تم التحقق من رمز التحقق بنجاح");
-        localStorage.setItem("resetOtp", data.otp);
-        router.push("/reset-password");
+        if (otpType === "login") {
+          // For login OTP, update user canLogin and redirect to home
+          updateUser({ canLogin: true });
+          localStorage.removeItem("loginEmail");
+          toast.success("تم التحقق من رمز التحقق بنجاح");
+          router.push("/");
+        } else if (otpType === "signup") {
+          // For signup OTP, update user canLogin and redirect to home
+          updateUser({ canLogin: true });
+          localStorage.removeItem("signupEmail");
+          toast.success("تم التحقق من رمز التحقق بنجاح");
+          router.push("/");
+        } else if (otpType === "forgot-password") {
+          // For password reset OTP
+          toast.success("تم التحقق من رمز التحقق بنجاح");
+          localStorage.setItem("resetOtp", data.otp);
+          router.push("/reset-password");
+        }
       } else {
         toast.error("رمز التحقق غير صحيح. حاول مرة أخرى.");
       }
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء التحقق. حاول مرة أخرى.");
     }
   };
@@ -67,11 +124,11 @@ export default function VerifyOTPPage() {
       <div className="w-full max-w-md">
         <div className="mb-6">
           <Link
-            href="/forgot-password"
+            href={getBackUrl()}
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <AiOutlineArrowLeft className="w-5 h-5" />
-            <span className="font-medium">العودة</span>
+            <span className="font-medium">{getBackText()}</span>
           </Link>
         </div>
 
@@ -124,7 +181,10 @@ export default function VerifyOTPPage() {
         <p className="text-center mt-6 text-gray-600">
           لم يصلك الرمز؟{" "}
           <button
-            onClick={() => toast.info("سيتم إرسال رمز جديد قريباً")}
+            onClick={async () => {
+              await sendOTP(email);
+              toast.info("سيتم إرسال رمز جديد قريباً");
+            }}
             className="text-amber-600 hover:text-amber-700 font-semibold"
           >
             أعد الإرسال

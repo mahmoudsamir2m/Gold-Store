@@ -1,6 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 type Country = "saudi" | "uae" | "egypt" | "all";
 
@@ -16,7 +23,9 @@ export function CountryProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("selectedCountry") as Country;
-    if (saved) setSelectedCountry(saved);
+    if (saved) {
+      setSelectedCountry(saved);
+    }
   }, []);
 
   const handleSetCountry = (country: Country) => {
@@ -25,7 +34,9 @@ export function CountryProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <CountryContext.Provider value={{ selectedCountry, setSelectedCountry: handleSetCountry }}>
+    <CountryContext.Provider
+      value={{ selectedCountry, setSelectedCountry: handleSetCountry }}
+    >
       {children}
     </CountryContext.Provider>
   );
@@ -33,6 +44,7 @@ export function CountryProvider({ children }: { children: ReactNode }) {
 
 export function useCountry() {
   const context = useContext(CountryContext);
-  if (!context) throw new Error("useCountry must be used within CountryProvider");
+  if (!context)
+    throw new Error("useCountry must be used within CountryProvider");
   return context;
 }

@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
       localStorage.removeItem("resetEmail");
       localStorage.removeItem("resetOtp");
       router.push("/login");
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء إعادة تعيين كلمة المرور. حاول مرة أخرى.");
     }
   };

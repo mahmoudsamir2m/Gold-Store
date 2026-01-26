@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,13 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const { sendOTP, isLoading } = useAuth();
+  const { sendOTP, isLoading, user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const {
     register,

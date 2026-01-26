@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,8 +24,14 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loginWithGoogle, isLoading } = useAuth();
+  const { login, loginWithGoogle, isLoading, sendOTP, user } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const {
     register,
@@ -38,24 +44,31 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data.email, data.password);
+      const userData = await login(data.email, data.password);
       reset();
-      toast.success("تم تسجيل الدخول بنجاح!");
-      router.push("/");
+      if (userData.canLogin) {
+        toast.success("تم تسجيل الدخول بنجاح!");
+        router.push("/");
+      } else {
+        await sendOTP(data.email);
+        toast.success("تم إرسال رمز التحقق إلى بريدك الإلكتروني");
+        localStorage.setItem("loginEmail", data.email);
+        router.push("/verify-otp");
+      }
     } catch (error) {
       toast.error("بيانات الدخول غير صحيحة. حاول مرة أخرى.");
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await loginWithGoogle();
-      toast.success("تم تسجيل الدخول بنجاح عبر جوجل!");
-      router.push("/");
-    } catch (error) {
-      toast.error("تعذر تسجيل الدخول عبر جوجل. حاول مرة أخرى.");
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     await loginWithGoogle();
+  //     toast.success("تم تسجيل الدخول بنجاح عبر جوجل!");
+  //     router.push("/");
+  //   } catch (error) {
+  //     toast.error("تعذر تسجيل الدخول عبر جوجل. حاول مرة أخرى.");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">

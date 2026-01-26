@@ -7,27 +7,28 @@ export interface User {
   email: string;
   name?: string;
   avatar?: string;
+  canLogin: boolean | null;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   loginWithGoogle: () => Promise<void>;
   signup: (
     email: string,
     password: string,
     name: string,
     phone: string,
-    country: string
+    country: string,
   ) => Promise<void>;
   logout: () => void;
   sendOTP: (email: string) => Promise<void>;
-  verifyOTP: (email: string, otp: string) => Promise<boolean>;
+  verifyOTP: (email: string, otp: string, type: string) => Promise<boolean>;
   resetPasswordWithOTP: (
     email: string,
     otp: string,
-    newPassword: string
+    newPassword: string,
   ) => Promise<void>;
   updateUser: (updates: Partial<User>) => void;
 }
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<User> => {
     setIsLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
@@ -81,22 +82,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: data.data.user.email,
         name: data.data.user.name,
         avatar: data.data.user.avatar,
+        canLogin: data.data.user.canLogin,
       };
 
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("token", data.data.token);
-      localStorage.setItem(
-        "auth-storage",
-        JSON.stringify({
-          state: {
-            token: data.data.token,
-            user: userData,
-            isAuthenticated: true,
-          },
-          version: 0,
-        })
-      );
-      setUser(userData);
+      if (userData.canLogin !== null) {
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem(
+          "auth-storage",
+          JSON.stringify({
+            state: {
+              token: data.data.token,
+              user: userData,
+              isAuthenticated: true,
+            },
+            version: 0,
+          }),
+        );
+        setUser(userData);
+      }
+
+      return userData;
     } finally {
       setIsLoading(false);
     }
@@ -112,6 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name: "Google User",
         avatar:
           "https://ui-avatars.com/api/?name=Google+User&background=random",
+        canLogin: true,
       };
       localStorage.setItem("user", JSON.stringify(mockUser));
       setUser(mockUser);
@@ -125,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     password: string,
     name: string,
     phone: string,
-    country: string
+    country: string,
   ) => {
     setIsLoading(true);
     try {
@@ -153,6 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: data.data.user.email,
         name: data.data.user.name,
         avatar: data.data.user.avatar,
+        canLogin: data.data.user.canLogin,
       };
 
       localStorage.setItem("user", JSON.stringify(userData));
@@ -166,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isAuthenticated: true,
           },
           version: 0,
-        })
+        }),
       );
       setUser(userData);
     } finally {
@@ -195,11 +203,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const sendOTP = async (email: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/password/send-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/password/send-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        },
+      );
 
       const data = await res.json();
 
@@ -211,14 +222,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const verifyOTP = async (email: string, otp: string): Promise<boolean> => {
+  const verifyOTP = async (
+    email: string,
+    otp: string,
+    type: string,
+  ): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/password/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/password/verify-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp, type }),
+        },
+      );
 
       const data = await res.json();
 
@@ -227,7 +245,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       return true;
-    } catch (error) {
+    } catch {
       return false;
     } finally {
       setIsLoading(false);
@@ -237,15 +255,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resetPasswordWithOTP = async (
     email: string,
     otp: string,
-    newPassword: string
+    newPassword: string,
   ) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/password/reset`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, password: newPassword }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/password/reset`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp, password: newPassword }),
+        },
+      );
 
       const data = await res.json();
 

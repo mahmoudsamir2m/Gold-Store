@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,13 +8,12 @@ import * as z from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
 
 const signupSchema = z
   .object({
@@ -35,8 +34,14 @@ type SignupFormData = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { signup, loginWithGoogle, isLoading } = useAuth();
+  const { signup, loginWithGoogle, isLoading, sendOTP, user } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const {
     register,
@@ -48,20 +53,28 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormData) => {
     try {
-      await signup(data.email, data.password, data.name, data.phone, data.country);
+      await signup(
+        data.email,
+        data.password,
+        data.name,
+        data.phone,
+        data.country,
+      );
       toast(
         <div className="text-right">
-          <strong>تم إنشاء الحساب</strong>
+          <strong>جاري انشاء الحساب</strong>
           <p>مرحبًا بك في دهبنا!</p>
-        </div>
+        </div>,
       );
-      router.push("/");
+      await sendOTP(data.email);
+      localStorage.setItem("signupEmail", data.email);
+      router.push("/verify-otp");
     } catch (err: any) {
       toast.error(
         <div className="text-right">
           <strong>فشل التسجيل</strong>
-          <p>{err.message || 'لم نتمكن من إنشاء الحساب. حاول مرة أخرى.'}</p>
-        </div>
+          <p>{err.message || "لم نتمكن من إنشاء الحساب. حاول مرة أخرى."}</p>
+        </div>,
       );
     }
   };
@@ -73,15 +86,15 @@ export default function SignupPage() {
         <div className="text-right">
           <strong>تم إنشاء الحساب</strong>
           <p>مرحبًا بك في دهبنا!</p>
-        </div>
+        </div>,
       );
       router.push("/");
-    } catch (err) {
+    } catch {
       toast(
         <div className="text-right">
           <strong>فشل التسجيل</strong>
           <p>لم نتمكن من التسجيل باستخدام Google. حاول مرة أخرى.</p>
-        </div>
+        </div>,
       );
     }
   };
@@ -160,7 +173,9 @@ export default function SignupPage() {
               {...register("phone")}
             />
             {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.phone.message}
+              </p>
             )}
           </div>
 
@@ -182,7 +197,9 @@ export default function SignupPage() {
               <option value="egypt">مصر</option>
             </select>
             {errors.country && (
-              <p className="text-red-500 text-sm mt-1">{errors.country.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.country.message}
+              </p>
             )}
           </div>
 

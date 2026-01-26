@@ -1,32 +1,76 @@
-// app/page.tsx
 import PricesTicker from "./_components/Home/PricesTicker/PricesTicker";
 import AboutSection from "./_components/Home/AboutSection/AboutSection";
 import BlogSection from "./_components/Home/BlogSection/BlogSection";
 import CategoriesSection from "./_components/Home/CategoriesSection/CategoriesSection";
 import HeroSection from "./_components/Home/HeroSection/HeroSection";
 import ProductsSection from "./_components/Home/ProductsSection/ProductsSection";
+import { headers } from "next/headers";
 
-export default function Home() {
+type AppContentResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    title: string;
+    subTitle1: string;
+    title2: string;
+    subTitle2: string;
+    title3: string;
+    subTitle3: string;
+  } | null;
+};
+
+export default async function Home() {
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = host?.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+  const res = await fetch(new URL("/api/homeTitles", baseUrl), {
+    cache: "no-store",
+  });
+
+  const result: AppContentResponse = await res.json();
+
+  // لو API رجّع مشكلة
+  if (!result.success || !result.data) {
+    return (
+      <main>
+        <PricesTicker />
+        <div className="container mx-auto px-4 py-10 text-center">
+          <h2 className="text-xl font-bold"> يوجد مشكلة</h2>
+          <p className="mt-2 text-gray-600">{result.message}</p>
+        </div>
+      </main>
+    );
+  }
+
+  const content = result.data;
+
   return (
     <main>
       <PricesTicker />
-      <HeroSection />
+
+      <HeroSection title={content.title} description={content.subTitle1} />
+
       <ProductsSection />
+
       <AboutSection
-        title="إتقان فن الذهب"
-        description="نصنع مجوهرات ذهبية خالدة بالدقة والشغف والحرفية التي تتوارثها الأجيال."
-        link="https://www.facebook.com/share/17PdGTGvxB/"
-        buttonText="تباعنا علي فيسبوك"
+        title={content.title2}
+        description={content.subTitle2}
+        link="/products"
+        buttonText="تسوق الان"
         imageSrc=""
       />
+
       {/* <CategoriesSection /> */}
+
       <AboutSection
-        title="استثمر في الفخامة... واربح المفاجأة!"
-        description="مع كل شراء ذهب، افتح بابًا لفرصة فريدة للفوز بهدية استثنائية تليق بذوقك الرفيع."
+        title={content.title3}
+        description={content.subTitle3}
         link="/products"
         buttonText="عرض الاعلانات"
         imageSrc="/Golden-shopping-cart.png"
       />
+
       <BlogSection />
     </main>
   );
