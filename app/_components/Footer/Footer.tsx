@@ -95,7 +95,7 @@ export default function Footer() {
                 alt="دهبنا"
                 width={70}
                 height={70}
-                className="rounded-full border-2 border-yellow-400"
+                className="rounded-full"
               />
               <span className="text-2xl md:text-3xl font-bold text-yellow-400">
                 دهبنا
