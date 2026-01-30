@@ -25,6 +25,8 @@ export default function ProductsSection() {
       const data = await res.json();
       return data.products || [];
     },
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
   });
 
   return (

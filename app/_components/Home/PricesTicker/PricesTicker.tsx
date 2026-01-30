@@ -16,6 +16,8 @@ export default function PricesTicker() {
       if (!res.ok) throw new Error();
       return res.json();
     },
+    staleTime: 1000 * 60 * 15, // 15 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
   });
 
   const goldPrices: any = {};
@@ -116,8 +118,8 @@ export default function PricesTicker() {
   return (
     <div className="prices-ticker bg-gray-900 hidden lg:block overflow-hidden">
       <div className="ticker-track text-white text-sm md:text-base font-semibold py-4">
-        <TickerContent />
-        <TickerContent />
+        {tickerContent}
+        {tickerContent}
       </div>
     </div>
   );
