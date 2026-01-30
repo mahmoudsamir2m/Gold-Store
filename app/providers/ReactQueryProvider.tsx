@@ -9,19 +9,7 @@ export default function ReactQueryProvider({
 }: {
   children: ReactNode;
 }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 1000 * 60 * 10, // 10 minutes
-            gcTime: 1000 * 60 * 30, // 30 minutes
-            refetchOnWindowFocus: false, // Disable refetch on window focus in production
-            refetchOnMount: false, // Disable refetch on mount if data is fresh
-          },
-        },
-      }),
-  );
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>

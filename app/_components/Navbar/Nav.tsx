@@ -63,6 +63,7 @@ function renderNavLinks(pathname: string) {
       <Link
         key={link.href}
         href={link.href}
+        prefetch={false}
         className={isActive ? "nav-link active" : "nav-link"}
       >
         {link.name}

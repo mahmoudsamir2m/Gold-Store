@@ -25,7 +25,7 @@ export default async function Home() {
   const protocol = host?.includes("localhost") ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;
   const res = await fetch(new URL("/api/homeTitles", baseUrl), {
-    next: { revalidate: 600 }, // Cache for 10 minutes
+    cache: "no-store",
   });
 
   const result: AppContentResponse = await res.json();

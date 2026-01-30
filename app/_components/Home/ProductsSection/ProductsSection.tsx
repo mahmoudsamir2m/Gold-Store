@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import ReusableSliderSection, {
   SwiperSlide,
 } from "../../ReusableSlider/ReusableSlider";
@@ -17,17 +17,29 @@ type Product = {
 };
 
 export default function ProductsSection() {
-  const { data: products = [], isLoading: loading } = useQuery({
-    queryKey: ["products", "featured"],
-    queryFn: async () => {
-      const res = await fetch("/api/products?per_page=8");
-      if (!res.ok) throw new Error("Failed to fetch products");
-      const data = await res.json();
-      return data.products || [];
-    },
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    gcTime: 1000 * 60 * 30, // 30 minutes
-  });
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products?per_page=8", {
+          cache: "no-store",
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch products");
+
+        const data = await res.json();
+        setProducts(data.products || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <ReusableSliderSection title="اعلانات مختارة" link="/products">
@@ -37,7 +49,7 @@ export default function ProductsSection() {
               <ProductCardSkeleton />
             </SwiperSlide>
           ))
-        : products.map((product: Product) => (
+        : products.map((product) => (
             <SwiperSlide key={product.id}>
               <Card
                 id={product.id}
@@ -50,6 +62,7 @@ export default function ProductsSection() {
               />
             </SwiperSlide>
           ))}
+          
     </ReusableSliderSection>
   );
 }

@@ -68,6 +68,7 @@ function NavItem({
     <li>
       <Link
         href={href}
+        prefetch={false}
         className={`flex flex-col items-center text-xs font-semibold ${
           pathName === href ? "text-primary-500" : ""
         }`}
