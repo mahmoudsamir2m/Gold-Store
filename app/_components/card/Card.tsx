@@ -82,6 +82,7 @@ export default function Card({
         {/* View Details Button */}
         <Link
           href={`/product/${id}`}
+          prefetch={false}
           className="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-sm"
         >
           عرض التفاصيل

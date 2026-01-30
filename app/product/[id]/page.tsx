@@ -205,6 +205,7 @@ export default function ProductDetailPage() {
             نأسف، لكننا لم نعثر على هذا الاعلان.
           </p>
           <Link
+            prefetch={false}
             href="/"
             className="inline-block bg-yellow-500 text-white px-6 py-2 rounded-md hover:bg-yellow-600"
           >

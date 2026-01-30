@@ -110,7 +110,7 @@ export default function Footer() {
 
           {/* سياسة الخصوصية */}
           <div className="max-w-2xl mx-auto mb-10 px-4">
-            <Link href="/privacy-policy" className="pt-10">
+            <Link href="/privacy-policy" prefetch={false} className="pt-10">
               <div className="flex justify-center items-center gap-2 text-yellow-400 hover:text-yellow-600 transition-colors">
                 <HiOutlineShieldCheck className="w-10 h-10" />
                 <h3 className="font-semibold text-xl md:text-2xl">
@@ -138,6 +138,7 @@ export default function Footer() {
                   <Link
                     key={link.id}
                     href={link.value}
+                    prefetch={false}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-gray-900/50 p-4 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300 block border border-gray-800 hover:border-yellow-400/50"

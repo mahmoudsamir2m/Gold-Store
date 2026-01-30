@@ -307,6 +307,7 @@ export default function SignupPage() {
           لديك حساب بالفعل؟{" "}
           <Link
             href="/login"
+            prefetch={false}
             className="text-amber-600 hover:text-amber-700 font-semibold"
           >
             تسجيل الدخول

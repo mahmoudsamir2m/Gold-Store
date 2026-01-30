@@ -120,6 +120,7 @@ export default function VerifyOTPPage() {
         <div className="mb-6">
           <Link
             href={getBackUrl()}
+            prefetch={false}
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <AiOutlineArrowLeft className="w-5 h-5" />

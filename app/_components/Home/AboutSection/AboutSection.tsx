@@ -48,6 +48,7 @@ export default function AboutSection({
 
           <Link
             href={link}
+            prefetch={false}
             target={
               link.includes("https://www.facebook.com") ? "_blank" : undefined
             }

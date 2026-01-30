@@ -4,6 +4,7 @@ import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { SliderProps } from "./types/SliderProps";
+import Link from "next/link";
 
 export default function ReusableSliderSection({
   title,
@@ -19,12 +20,13 @@ export default function ReusableSliderSection({
         </h2>
 
         {link && (
-          <a
+          <Link
             href={link}
+            prefetch={false}
             className="text-primary-500 hover:text-primary-600 font-semibold text-xl transition"
           >
             عرض الكل
-          </a>
+          </Link>
         )}
       </div>
 

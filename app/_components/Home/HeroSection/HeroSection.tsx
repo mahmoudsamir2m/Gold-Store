@@ -36,6 +36,7 @@ export default function HeroSection({ title, description }: { title: string, des
 
         <Link
           href="/products"
+          prefetch={false}
           className="bg-primary-500 hover:bg-primary-600 text-black font-bold py-3 px-8 rounded-lg transition-colors text-lg"
         >
           تسوّق الآن

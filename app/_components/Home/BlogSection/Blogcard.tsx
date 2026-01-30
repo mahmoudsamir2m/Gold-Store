@@ -21,7 +21,7 @@ export default function GoldCard({
   slug,
 }: GoldCardProps) {
   return (
-    <Link href={`/blog/${slug}`} className="group block">
+    <Link href={`/blog/${slug}`} prefetch={false} className="group block">
       <div
         className="
         bg-white rounded-xl p-4 border-2 border-primary-500 shadow-lg

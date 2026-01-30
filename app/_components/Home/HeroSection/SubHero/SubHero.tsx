@@ -20,6 +20,7 @@ export default function SubHero() {
               </h3>
               <Link
                 href="/products"
+                prefetch={false}
                 className="px-4 py-1.5 border border-white font-bold text-white rounded-lg text-lg hover:bg-white hover:text-black transition"
               >
                 تسوق الآن
@@ -46,6 +47,7 @@ export default function SubHero() {
                   </h3>
                   <Link
                     href="/products"
+                    prefetch={false}
                     className="px-6 py-2 border border-white text-white rounded-lg text-sm hover:bg-white hover:text-black transition"
                   >
                     تسوق الآن
@@ -89,6 +91,7 @@ export default function SubHero() {
                   </h3>
                   <Link
                     href="/products"
+                    prefetch={false}
                     className="px-6 py-2 border border-white text-white rounded-lg text-sm hover:bg-white hover:text-black transition"
                   >
                     تسوق الآن

@@ -108,6 +108,7 @@ export default function LoginPage() {
               </Label>
               <Link
                 href="/forgot-password"
+                prefetch={false}
                 className="text-sm text-amber-600 hover:text-amber-700 font-medium"
               >
                 نسيت كلمة المرور؟
@@ -179,6 +180,7 @@ export default function LoginPage() {
           لا تملك حساب؟{" "}
           <Link
             href="/signup"
+            prefetch={false}
             className="text-amber-600 hover:text-amber-700 font-semibold"
           >
             إنشاء حساب
