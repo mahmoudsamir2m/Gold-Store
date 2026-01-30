@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import ReusableSliderSection, {
   SwiperSlide,
 } from "../../ReusableSlider/ReusableSlider";
@@ -17,29 +17,15 @@ type Product = {
 };
 
 export default function ProductsSection() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products?per_page=8", {
-          cache: "no-store",
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch products");
-
-        const data = await res.json();
-        setProducts(data.products || []);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const { data: products = [], isLoading: loading } = useQuery({
+    queryKey: ["products", "featured"],
+    queryFn: async () => {
+      const res = await fetch("/api/products?per_page=8");
+      if (!res.ok) throw new Error("Failed to fetch products");
+      const data = await res.json();
+      return data.products || [];
+    },
+  });
 
   return (
     <ReusableSliderSection title="اعلانات مختارة" link="/products">
@@ -62,7 +48,6 @@ export default function ProductsSection() {
               />
             </SwiperSlide>
           ))}
-          
     </ReusableSliderSection>
   );
 }

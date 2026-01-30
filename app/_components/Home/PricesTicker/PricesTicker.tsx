@@ -2,44 +2,37 @@
 
 import "./prices-ticker.css";
 import { useCountry } from "@/contexts/CountryContext";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function PricesTicker() {
   const { selectedCountry } = useCountry();
-  const [goldPrices, setGoldPrices] = useState<any>({});
-  const [silverPrices, setSilverPrices] = useState<any>({});
-  const [currency, setCurrency] = useState("ج");
 
-  useEffect(() => {
-    async function fetchPrices() {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/prices/formatted?country=${selectedCountry}`);
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        
-        if (data.gold?.purity) {
-          const goldMap: any = {};
-          data.gold.purity.forEach((item: any) => {
-            goldMap[item.name] = Math.round(item.price);
-          });
-          setGoldPrices(goldMap);
-        }
-        
-        if (data.silver?.purity) {
-          const silverMap: any = {};
-          data.silver.purity.forEach((item: any) => {
-            silverMap[item.name] = Math.round(item.price);
-          });
-          setSilverPrices(silverMap);
-        }
-        
-        setCurrency(data.currencySymbol || "ج");
-      } catch {
-        // Fallback values
-      }
-    }
-    fetchPrices();
-  }, [selectedCountry]);
+  const { data: pricesData } = useQuery({
+    queryKey: ["prices", selectedCountry],
+    queryFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/prices/formatted?country=${selectedCountry}`,
+      );
+      if (!res.ok) throw new Error();
+      return res.json();
+    },
+  });
+
+  const goldPrices: any = {};
+  const silverPrices: any = {};
+  const currency = pricesData?.currencySymbol || "ج";
+
+  if (pricesData?.gold?.purity) {
+    pricesData.gold.purity.forEach((item: any) => {
+      goldPrices[item.name] = Math.round(item.price);
+    });
+  }
+
+  if (pricesData?.silver?.purity) {
+    pricesData.silver.purity.forEach((item: any) => {
+      silverPrices[item.name] = Math.round(item.price);
+    });
+  }
 
   const TickerContent = () => (
     <>
@@ -47,19 +40,31 @@ export default function PricesTicker() {
         <span className="mx-4 md:mx-8 text-yellow-500">
           ✨ استثمر في الذهب.. قيمة بتزيد مع الوقت
         </span>
-        {goldPrices['24K'] && (
+        {goldPrices["24K"] && (
           <span className="mx-4 md:mx-8">
-            الذهب 24: <span className="text-yellow-500">{currency}{goldPrices['24K']}</span>
+            الذهب 24:{" "}
+            <span className="text-yellow-500">
+              {currency}
+              {goldPrices["24K"]}
+            </span>
           </span>
         )}
-        {goldPrices['21K'] && (
+        {goldPrices["21K"] && (
           <span className="mx-4 md:mx-8">
-            21: <span className="text-yellow-500">{currency}{goldPrices['21K']}</span>
+            21:{" "}
+            <span className="text-yellow-500">
+              {currency}
+              {goldPrices["21K"]}
+            </span>
           </span>
         )}
-        {goldPrices['18K'] && (
+        {goldPrices["18K"] && (
           <span className="mx-4 md:mx-8">
-            18: <span className="text-yellow-500">{currency}{goldPrices['18K']}</span>
+            18:{" "}
+            <span className="text-yellow-500">
+              {currency}
+              {goldPrices["18K"]}
+            </span>
           </span>
         )}
       </div>
@@ -68,24 +73,40 @@ export default function PricesTicker() {
         <span className="mx-4 md:mx-8 text-gray-300">
           ⚪ الفضة اختيار ذكي للأناقة والاستثمار
         </span>
-        {silverPrices['999'] && (
+        {silverPrices["999"] && (
           <span className="mx-4 md:mx-8">
-            999: <span className="text-gray-300">{currency}{silverPrices['999']}</span>
+            999:{" "}
+            <span className="text-gray-300">
+              {currency}
+              {silverPrices["999"]}
+            </span>
           </span>
         )}
-        {silverPrices['925'] && (
+        {silverPrices["925"] && (
           <span className="mx-4 md:mx-8">
-            925: <span className="text-gray-300">{currency}{silverPrices['925']}</span>
+            925:{" "}
+            <span className="text-gray-300">
+              {currency}
+              {silverPrices["925"]}
+            </span>
           </span>
         )}
-        {silverPrices['900'] && (
+        {silverPrices["900"] && (
           <span className="mx-4 md:mx-8">
-            900: <span className="text-gray-300">{currency}{silverPrices['900']}</span>
+            900:{" "}
+            <span className="text-gray-300">
+              {currency}
+              {silverPrices["900"]}
+            </span>
           </span>
         )}
-        {silverPrices['800'] && (
+        {silverPrices["800"] && (
           <span className="mx-4 md:mx-8">
-            800: <span className="text-gray-300">{currency}{silverPrices['800']}</span>
+            800:{" "}
+            <span className="text-gray-300">
+              {currency}
+              {silverPrices["800"]}
+            </span>
           </span>
         )}
       </div>
