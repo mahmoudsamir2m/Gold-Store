@@ -35,7 +35,7 @@ export default function ProductsSection() {
               <ProductCardSkeleton />
             </SwiperSlide>
           ))
-        : products.map((product) => (
+        : products.map((product: Product) => (
             <SwiperSlide key={product.id}>
               <Card
                 id={product.id}
