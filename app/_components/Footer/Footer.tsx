@@ -109,6 +109,8 @@ export default function Footer() {
                 <li key={link.id}>
                   <Link
                     href={link.value}
+                    prefetch={false}
+                    target="_blank"
                     className="hover:text-yellow-400 transition-colors duration-300 flex items-center gap-2 group"
                   >
                     <span className="h-1 w-1 bg-yellow-500 rounded-full group-hover:w-3 transition-all"></span>
@@ -132,6 +134,7 @@ export default function Footer() {
                     <Link
                       key={link.id}
                       href={link.value}
+                      prefetch={false}
                       target="_blank"
                       className="bg-white/5 p-3 rounded-full hover:bg-yellow-500 hover:text-[#042D24] transition-all duration-300 text-yellow-500"
                     >
@@ -144,6 +147,7 @@ export default function Footer() {
 
             <Link
               href="/privacy-policy"
+              prefetch={false}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-700 hover:border-yellow-500 hover:text-yellow-500 transition-all group"
             >
               <HiOutlineShieldCheck className="text-xl group-hover:rotate-12 transition-transform" />
